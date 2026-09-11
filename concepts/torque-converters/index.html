@@ -33,6 +33,15 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>A torque converter connects an engine to a transmission with spinning fluid instead of a mechanical clutch plate. It transmits power smoothly through oil, and — unlike a simple fluid coupling — can actually multiply torque when the engine is spinning much faster than the output shaft.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>Inside its sealed housing, an engine-driven impeller flings transmission fluid outward into a connected turbine, which drives the output shaft; a third element, the stator, redirects the returning fluid to add rather than fight the impeller's flow. That redirection is what lets a stalled torque converter — output shaft barely turning, as at the start of a dozer push — deliver up to roughly twice the engine's torque to the tracks, tapering back to a 1:1 fluid coupling once both sides spin near the same speed.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Torque multiplication ratio</div><div class="eq-b">TR = τ_out / τ_in</div><div class="eq-n">Maximum near stall (large speed difference between impeller and turbine), falling to about 1:1 once impeller and turbine speeds converge.</div></div></section>
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Torque Converter Curve</h2>
+<p>Slide the turbine-to-impeller speed ratio to see torque multiplication fall from its peak near stall to 1:1 once both sides spin together.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="tcSvg" viewBox="0 0 300 220" width="100%" height="100%" role="img" aria-label="A torque-multiplication curve against turbine speed ratio, with a marker at the current point"></svg></div>
+  <div class="sim-row"><span>SPEED RATIO (turbine / impeller)</span><span class="mono" id="tcRatioVal">0.20</span></div>
+  <input id="tcRatioSlider" type="range" min="0" max="100" step="1" value="20">
+  <div class="sim-readout" id="tcReadout"></div>
+  <p class="sim-note">Input torque fixed at 500 N·m. Multiplication tapers to 1:1 once impeller and turbine converge — the coupling point.</p>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>A torque converter is why a heavy machine in gear can sit still against the brake with the engine revving and not stall — there is no rigid mechanical link to lock up.</li><li>The fluid coupling inside runs hot enough under sustained heavy load that it needs its own dedicated oil cooler, often larger than the engine's coolant radiator.</li><li>Many modern torque converters include a lock-up clutch that bolts the impeller directly to the turbine once they're spinning together, trading the converter's smoothness for a mechanical connection's efficiency.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
@@ -43,5 +52,35 @@
 </div></footer>
 <script type="application/json" id="page-data">{"type": "concept", "slug": "torque-converters", "domain": "clutches-transmissions", "relatedConcepts": ["gear-ratios", "final-drives-differentials"]}</script>
 <script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var s=document.getElementById('tcRatioSlider'), val=document.getElementById('tcRatioVal');
+  var svg=document.getElementById('tcSvg'), readout=document.getElementById('tcReadout');
+  if(!s||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  function tr(ratio){ return Math.max(1, 2-1.111*ratio); }
+  var x0=30,x1=270,y0=190,y1=40;
+  function pt(ratio){ var t=tr(ratio); return [x0+ratio*(x1-x0), y0-((t-1)/1)*(y0-y1)]; }
+  function draw(){
+    var ratio=parseInt(s.value,10)/100; val.textContent=ratio.toFixed(2);
+    var t=tr(ratio), outT=500*t;
+    svg.innerHTML='';
+    svg.appendChild(ns('line',{x1:x0,y1:y0,x2:x1,y2:y0,stroke:'#c3c9ce','stroke-width':2}));
+    svg.appendChild(ns('line',{x1:x0,y1:y0,x2:x0,y2:y1,stroke:'#c3c9ce','stroke-width':2}));
+    var d='M', pts=[];
+    for(var i=0;i<=20;i++){ var p=pt(i/20); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg.appendChild(ns('path',{d:'M'+pts.join(' L'), fill:'none', stroke:'#2454c7','stroke-width':2.5}));
+    var cur=pt(ratio);
+    svg.appendChild(ns('circle',{cx:cur[0],cy:cur[1],r:6,fill:'#c1541d'}));
+    var lbl1=ns('text',{x:x0-6,y:y1-4,'text-anchor':'start','font-family':'IBM Plex Mono, monospace','font-size':'9',fill:'#8a92a0'}); lbl1.textContent='2.0×'; svg.appendChild(lbl1);
+    var lbl2=ns('text',{x:x0-6,y:y0+4,'text-anchor':'start','font-family':'IBM Plex Mono, monospace','font-size':'9',fill:'#8a92a0'}); lbl2.textContent='1.0×'; svg.appendChild(lbl2);
+    var cells=[['SPEED RATIO',ratio.toFixed(2)],['TORQUE MULTIPLIER',t.toFixed(2)+'×'],['OUTPUT TORQUE',outT.toFixed(0)+' N·m']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  s.addEventListener('input',draw);
+  draw();
+})();
+</script>
 </body>
 </html>

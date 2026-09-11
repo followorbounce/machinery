@@ -33,6 +33,17 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>Torque is a twisting force — how hard something is being turned around an axis, rather than pushed in a straight line. It is the rotational equivalent of force, and it is the single number that decides whether an engine can turn a wheel, a bolt, or a bucket wheel the size of a building.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>Torque depends on two things: how hard you push, and how far from the pivot you push it. The same 50 kg push on a 2-metre wrench produces twice the twisting effect of the same push on a 1-metre wrench — the force hasn't changed, only its leverage has. Every gearbox, final drive, and hydraulic motor on this site exists to change that lever arm without changing the force at the source.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Torque</div><div class="eq-b">τ = F × r</div><div class="eq-n">F = applied force, r = the perpendicular distance from the pivot to the line of the force (the lever arm).</div></div></section>
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Lever & Torque</h2>
+<p>Slide the applied force and the lever-arm length to see how the torque at the pivot responds.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="trqSvg" viewBox="0 0 300 220" width="100%" height="100%" role="img" aria-label="A force applied at a distance from a pivot, producing torque"></svg></div>
+  <div class="sim-row"><span>FORCE</span><span class="mono" id="trqForceVal">200 N</span></div>
+  <input id="trqForceSlider" type="range" min="20" max="500" step="10" value="200">
+  <div class="sim-row"><span>LEVER ARM</span><span class="mono" id="trqArmVal">1.0 m</span></div>
+  <input id="trqArmSlider" type="range" min="0.2" max="3" step="0.1" value="1.0">
+  <div class="sim-readout" id="trqReadout"></div>
+  <p class="sim-note">τ = F × r — the same force produces more torque the farther it acts from the pivot.</p>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>A diesel engine's torque, not its horsepower, is what actually gets a loaded haul truck moving from a dead stop — horsepower only matters once the truck is already rolling.</li><li>Torque and power are linked by rotational speed: P = τ × ω, which is why a low-revving diesel and a high-revving turbine can produce the same power from very different torque figures.</li><li>Torque wrenches exist because a bolt is really a very short, very stiff lever — over-torque it and you don't push it in further, you shear the threads.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
@@ -43,5 +54,33 @@
 </div></footer>
 <script type="application/json" id="page-data">{"type": "concept", "slug": "torque", "domain": "mechanics", "relatedConcepts": ["mechanical-advantage", "gear-ratios"]}</script>
 <script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var f=document.getElementById('trqForceSlider'), r=document.getElementById('trqArmSlider');
+  var fVal=document.getElementById('trqForceVal'), rVal=document.getElementById('trqArmVal');
+  var svg=document.getElementById('trqSvg'), readout=document.getElementById('trqReadout');
+  if(!f||!r||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  function draw(){
+    var force=parseFloat(f.value), arm=parseFloat(r.value);
+    fVal.textContent=force+' N'; rVal.textContent=arm.toFixed(1)+' m';
+    var torque=force*arm;
+    var px=40, py=180, scale=70;
+    var ex=px+arm*scale, ey=py;
+    svg.innerHTML='';
+    svg.appendChild(ns('polygon',{points:(px-10)+','+(py+18)+' '+(px+10)+','+(py+18)+' '+px+','+py, fill:'#151a1f'}));
+    svg.appendChild(ns('line',{x1:px,y1:py,x2:ex,y2:ey, stroke:'#2454c7','stroke-width':6,'stroke-linecap':'round'}));
+    var arrowLen=Math.min(110, 20+force/6);
+    svg.appendChild(ns('line',{x1:ex,y1:ey-arrowLen,x2:ex,y2:ey-6, stroke:'#c1541d','stroke-width':4}));
+    svg.appendChild(ns('polygon',{points:(ex-7)+','+(ey-16)+' '+(ex+7)+','+(ey-16)+' '+ex+','+(ey-2), fill:'#c1541d'}));
+    var lbl=ns('text',{x:ex,y:Math.max(16,ey-arrowLen-8),'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'11','font-weight':'700',fill:'#c1541d'}); lbl.textContent='F'; svg.appendChild(lbl);
+    var cells=[['FORCE',force+' N'],['LEVER ARM',arm.toFixed(1)+' m'],['TORQUE',torque.toFixed(0)+' N·m']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  f.addEventListener('input',draw); r.addEventListener('input',draw);
+  draw();
+})();
+</script>
 </body>
 </html>

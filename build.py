@@ -7,7 +7,7 @@ plus data/graph.json (the single source of truth for nav + relationships),
 sitemap.xml, robots.txt and llms.txt. No build framework required: run
 `python3 build.py` from the project root any time content changes.
 """
-import json, os, re
+import json, math, os, re
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SITE_URL = "https://followorbounce.github.io/machinery"
@@ -39,6 +39,7 @@ DOMAINS = [
 CONCEPTS = [
     {
         "slug": "torque", "title": "Torque", "domain": "mechanics",
+        "interactive": "lever-torque",
         "stats": [("Unit", "N·m (lb-ft)"), ("Also called", "Moment of force"), ("Governs", "Every rotating driveline")],
         "definition": "Torque is a twisting force — how hard something is being turned around an axis, rather than pushed in a straight line. It is the rotational equivalent of force, and it is the single number that decides whether an engine can turn a wheel, a bolt, or a bucket wheel the size of a building.",
         "principle": "Torque depends on two things: how hard you push, and how far from the pivot you push it. The same 50 kg push on a 2-metre wrench produces twice the twisting effect of the same push on a 1-metre wrench — the force hasn't changed, only its leverage has. Every gearbox, final drive, and hydraulic motor on this site exists to change that lever arm without changing the force at the source.",
@@ -52,6 +53,7 @@ CONCEPTS = [
     },
     {
         "slug": "mechanical-advantage", "title": "Mechanical Advantage", "domain": "mechanics",
+        "interactive": "lever-ma",
         "stats": [("Formula", "MA = output / input"), ("Trade-off", "Force for distance"), ("Oldest example", "The lever, ~3000 BCE")],
         "definition": "Mechanical advantage is the factor by which a machine multiplies an input force. A machine with a mechanical advantage of 20 turns 50 kg of push into 1,000 kg of usable force — at the cost of the input having to move 20 times farther or faster than the output.",
         "principle": "No machine creates energy; mechanical advantage only trades force against distance so that work in equals work out. A dragline's rigging, a forklift's hydraulic ram, and a bulldozer's final drive are all, underneath the steel, the same three-thousand-year-old idea as a crowbar under a rock — just reapplied through wire rope, oil pressure, or gear teeth instead of a wooden pole.",
@@ -82,6 +84,7 @@ CONCEPTS = [
     },
     {
         "slug": "planetary-gears", "title": "Planetary Gears", "domain": "gears",
+        "interactive": "planetary",
         "stats": [("Members", "Sun, planets, ring, carrier"), ("Advantage", "Huge ratio in a small housing"), ("Used in", "Final drives, TBM cutterheads, automatic transmissions")],
         "definition": "A planetary (epicyclic) gearset arranges a central sun gear, several orbiting planet gears on a carrier, and an outer ring gear with internal teeth, all meshed together and sharing one axis. Fixing any one of the three members and driving another produces a different gear ratio from the same set of parts.",
         "principle": "Because load is shared across three or more planet gears instead of a single meshing pair, a planetary set transmits far more torque for its size and weight than an equivalent simple gear train — which is exactly why it lives inside the tight final-drive housing at a bulldozer's track sprocket, or inside a tunnel boring machine's cutterhead drive, where space is the scarcest resource on the machine.",
@@ -112,6 +115,7 @@ CONCEPTS = [
     },
     {
         "slug": "hydraulic-cylinders", "title": "Hydraulic Cylinders", "domain": "hydraulics",
+        "interactive": "cylinder-flow",
         "stats": [("Type", "Linear actuator"), ("Typical pressure", "200 – 350 bar in heavy equipment"), ("Found in", "Booms, buckets, blades, outriggers")],
         "definition": "A hydraulic cylinder is a tube, a piston, and a rod that turns fluid pressure directly into a straight-line push or pull. It is the most common actuator on any heavy machine built after about 1950, because it can deliver enormous force from a compact, sealed package with no gears at all.",
         "principle": "Pump oil into one side of the piston and it pushes the rod out; pump oil into the other side and it pulls the rod back in — the direction is controlled entirely by a valve, not by the cylinder itself. Because force scales with piston area (Pascal's Law), a boom cylinder only a few hundred millimetres across can lift many tonnes at the far end of an excavator's arm, at working pressures that would be lethal if the seals ever failed.",
@@ -125,6 +129,7 @@ CONCEPTS = [
     },
     {
         "slug": "four-stroke-diesel-cycle", "title": "Four-Stroke Diesel Cycle", "domain": "engines",
+        "interactive": "four-stroke",
         "stats": [("Strokes per cycle", "4"), ("Ignition", "Compression, no spark plug"), ("Typical compression ratio", "14:1 to 22:1")],
         "definition": "The four-stroke diesel cycle is the sequence of intake, compression, power, and exhaust that a diesel engine's piston repeats to convert fuel into rotating torque. Unlike a petrol engine, it ignites fuel using heat from compression alone, with no spark plug.",
         "principle": "On the intake stroke the piston draws in only air. On compression, that air is squeezed hard enough — often 14 to 22 times smaller — that its temperature alone exceeds diesel fuel's ignition point. Fuel is injected right at that moment and ignites immediately on contact with the superheated air, driving the piston down on the power stroke; the exhaust stroke then clears the cylinder for the next cycle. Every crankshaft revolution moves the piston through two strokes, so a four-stroke engine fires each cylinder once every two revolutions.",
@@ -138,6 +143,7 @@ CONCEPTS = [
     },
     {
         "slug": "torque-converters", "title": "Torque Converters", "domain": "clutches-transmissions",
+        "interactive": "torque-converter",
         "stats": [("Type", "Fluid coupling"), ("Multiplies torque", "Up to ~2:1 at stall"), ("Used in", "Automatic transmissions, dozers, wheel loaders")],
         "definition": "A torque converter connects an engine to a transmission with spinning fluid instead of a mechanical clutch plate. It transmits power smoothly through oil, and — unlike a simple fluid coupling — can actually multiply torque when the engine is spinning much faster than the output shaft.",
         "principle": "Inside its sealed housing, an engine-driven impeller flings transmission fluid outward into a connected turbine, which drives the output shaft; a third element, the stator, redirects the returning fluid to add rather than fight the impeller's flow. That redirection is what lets a stalled torque converter — output shaft barely turning, as at the start of a dozer push — deliver up to roughly twice the engine's torque to the tracks, tapering back to a 1:1 fluid coupling once both sides spin near the same speed.",
@@ -151,6 +157,7 @@ CONCEPTS = [
     },
     {
         "slug": "final-drives-differentials", "title": "Final Drives & Differentials", "domain": "power-transmission",
+        "interactive": "final-drive",
         "stats": [("Location", "Last stage before the wheels/tracks"), ("Typical ratio", "4:1 to 40:1 depending on machine"), ("Differential's job", "Allow left/right speed difference")],
         "definition": "The final drive is the last gear reduction in a driveline, sitting right at the wheel hub or track sprocket, where the very highest torque and lowest speed in the whole machine are required. The differential, usually just upstream of it, allows the two output shafts to spin at different speeds — essential the moment the machine turns a corner.",
         "principle": "An engine spins fast but with comparatively little torque; a final drive's job is to spend the last, steepest gear reduction of the whole driveline turning that speed into torque, right where the ground finally meets the machine. A differential solves a problem final drives alone can't: in a turn, an outside wheel or track must travel farther, and therefore faster, than the inside one, so the differential splits incoming torque between two output shafts while letting them rotate independently — normally, at the cost of always sending more torque to whichever wheel spins easiest, which is why heavy machines add lockable or limited-slip differentials for low-traction ground.",
@@ -164,6 +171,7 @@ CONCEPTS = [
     },
     {
         "slug": "bearings", "title": "Bearings", "domain": "power-transmission",
+        "interactive": "bearing-cutaway",
         "stats": [("Job", "Let parts rotate with minimum friction"), ("Main types", "Ball, roller, plain, slew"), ("Failure mode", "Contamination, most often"), ],
         "definition": "A bearing is the part of a machine designed to take the friction, so nothing more expensive around it has to. It supports a rotating or sliding component while letting it move with as little resistance and wear as possible.",
         "principle": "Two hard steel surfaces sliding directly against each other under load generate heat and wear at a rate no machine could survive in continuous service — a bearing interrupts that direct contact, either with a layer of rolling balls or rollers (rolling-element bearings) or with a thin, continuously replenished film of oil (plain/journal bearings) that keeps the two surfaces from ever quite touching. A slew bearing, the giant ring gear a whole excavator's upper structure rotates on, is really just this same idea scaled up to a component several metres across.",
@@ -184,6 +192,8 @@ MACHINES = [
     {
         "slug": "liebherr-r9800", "title": "Liebherr R 9800", "category": "mining-equipment",
         "summary": "An 800-tonne hydraulic mining excavator built to load the very largest haul trucks in a handful of passes, and one of the two or three largest hydraulic excavators ever put into series production.",
+        "purpose": "It exists to close the gap between hydraulic excavators and the largest cable shovels — giving mines a hydraulic machine that can still load the biggest haul trucks in a handful of passes, without switching to cable-and-hoist mechanics.",
+        "scale": ("weight", 800, None),
         "stats": [("Operating weight", "800 t"), ("Bucket capacity", "up to 42 m³"), ("Engine power", "4,000 hp"), ("Configuration", "Backhoe or face shovel")],
         "history": "Liebherr introduced the R 9800 in 2011 to compete directly with cable-operated electric mining shovels on the biggest jobs, betting that hydraulics — by then dominant at every smaller size class — could scale all the way to the top of the market. It has since become a fixture at copper and oil-sands operations that need a shovel able to fill a 400-tonne haul truck in three to five passes.",
         "components": [
@@ -210,6 +220,8 @@ MACHINES = [
     {
         "slug": "caterpillar-d11", "title": "Caterpillar D11", "category": "construction-equipment",
         "summary": "Caterpillar's largest production bulldozer, built to push more material per pass than any other dozer in its catalogue, almost exclusively in mining rather than general construction.",
+        "purpose": "Built for one job only: moving more material per dozer pass than anything else in Caterpillar's catalogue, on ground too demanding for a mid-size dozer to clear economically.",
+        "scale": ("weight", 112.7, None),
         "stats": [("Operating weight", "112.7 t"), ("Flywheel power", "850 hp"), ("Blade capacity", "43.6 m³"), ("Engine", "Cat C32 ACERT")],
         "history": "The D11 lineage traces back to Caterpillar's push through the 1980s and 1990s to build ever-larger track-type tractors for surface mining, where a single dozer pass moving more material directly cuts cost per tonne. Successive D11 generations (D11N, D11R, D11T, and today's D11) have kept the same basic architecture — single engine, single blade, elevated sprocket drive — while steadily raising weight and horsepower.",
         "components": [
@@ -235,6 +247,8 @@ MACHINES = [
     {
         "slug": "caterpillar-994k", "title": "Caterpillar 994K", "category": "construction-equipment",
         "summary": "Caterpillar's largest wheel loader, built to load haul trucks directly rather than push or carry material any real distance — a specialist at one job, done at enormous scale.",
+        "purpose": "Exists purely to keep the largest haul trucks fed — a wheel loader sized specifically to fill a 150 – 300 t truck in three to five passes, nothing more.",
+        "scale": ("weight", 243, None),
         "stats": [("Operating weight", "~243 t"), ("Engine power", "1,739 hp"), ("Bucket capacity", "19 – 24.5 m³"), ("Loading targets", "150 – 300 t haul trucks")],
         "history": "Wheel loaders scaled up alongside haul trucks through the late 20th century, because a loader too small for its truck fleet becomes the bottleneck at every load cycle. The 994 series has been Caterpillar's answer at the top end of that race since the 1990s, growing through the 994D, 994F, and 994H before the current 994K, matched specifically to load the largest Cat mining trucks in three to five bucket passes.",
         "components": [
@@ -260,6 +274,8 @@ MACHINES = [
     {
         "slug": "caterpillar-24m", "title": "Caterpillar 24 Motor Grader", "category": "construction-equipment",
         "summary": "The largest motor grader Caterpillar builds, sized specifically to maintain the wide haul roads inside a mine rather than the narrower roads a construction grader typically finishes.",
+        "purpose": "Exists to keep haul roads within the tight tolerance mine-truck tyres depend on — a job that pays for the machine's size many times over in extended tyre life alone.",
+        "scale": ("weight", 65.8, None),
         "stats": [("Operating weight", "~65.8 t"), ("Blade length", "24 ft class"), ("Role", "Mine haul-road maintenance"), ("Wheel configuration", "6×4 or 6×6")],
         "history": "Motor graders scaled up specifically to keep pace with the haul roads mining trucks depend on: a rutted or poorly cambered haul road wears tyres and suspension components on every truck that crosses it, all day, so a grader capable of maintaining a very wide road in fewer passes pays for its size many times over. Caterpillar's 24-class graders have occupied the top of that size range for decades.",
         "components": [
@@ -285,6 +301,8 @@ MACHINES = [
     {
         "slug": "caterpillar-797f", "title": "Caterpillar 797F", "category": "mining-equipment",
         "summary": "The largest mechanical-drive haul truck Caterpillar builds — a 400-ton-payload truck powered by a single, enormous diesel engine rather than the diesel-electric drivetrains some rivals use at this size.",
+        "purpose": "Built to move the maximum payload a single mechanical drivetrain can handle, so a mine can haul more ore per truck without switching to a diesel-electric design.",
+        "scale": ("weight", 624, "loaded gross weight"),
         "stats": [("Payload capacity", "400 short tons"), ("Engine", "Cat C175-20, 4,000 hp"), ("Drive type", "Mechanical (torque converter + gearbox)"), ("Tyres", "6, at roughly 4 m diameter each")],
         "history": "Caterpillar introduced the original 797 in 1998 specifically to compete at the top of the ultra-class haul truck market with a mechanical drivetrain, at a time when many rivals of similar size used diesel-electric drive. Successive versions — 797, 797B, and today's 797F — have kept that mechanical-drive bet while steadily raising engine output, culminating in the C175-20's 4,000 hp, about 450 hp more than its predecessor.",
         "components": [
@@ -310,6 +328,8 @@ MACHINES = [
     {
         "slug": "big-muskie-dragline", "title": "Bucyrus-Erie 4250-W “Big Muskie”", "category": "mining-equipment",
         "summary": "The largest walking dragline ever built — a single, one-off machine so large it needed its own specially built rail cars just to ship its components to the mine where it was assembled.",
+        "purpose": "Purpose-built for one site: stripping Ohio coal overburden faster than any smaller dragline could, at a scale no other machine of its kind has matched before or since.",
+        "scale": ("length", 94, "boom length"),
         "stats": [("Bucket capacity", "220 cubic yards (170 m³)"), ("Boom length", "310 ft (94 m)"), ("Weight", "~13,000 t"), ("Status", "Retired 1991, partly preserved")],
         "history": "Bucyrus-Erie built the 4250-W, nicknamed Big Muskie, in 1969 for the Central Ohio Coal Company, as the single largest walking dragline the company ever produced and the only one of its exact model built. It worked Ohio coal country for over two decades before rising sulphur-regulation costs and reclamation-law changes made it uneconomical, and it was retired in 1991; only its bucket survives today, preserved as a monument.",
         "components": [
@@ -335,6 +355,8 @@ MACHINES = [
     {
         "slug": "bagger-293", "title": "TAKRAF Bagger 293", "category": "mining-equipment",
         "summary": "A bucket wheel excavator recognised by Guinness World Records as the heaviest land vehicle ever built, and — tied with its near-sister Bagger 288 — the tallest.",
+        "purpose": "Exists to strip overburden continuously, fast enough to keep pace with round-the-clock lignite extraction at a single German mine — a job cyclic excavators couldn't match.",
+        "scale": ("length", 96, "height"),
         "stats": [("Length", "225 m"), ("Height", "96 m"), ("Weight", "14,200 t"), ("Bucket wheel diameter", "21.3 m, 18 buckets")],
         "history": "TAKRAF built Bagger 293 in Germany in 1995 as an evolution of the earlier Bagger 288, purpose-built to strip overburden fast enough to keep pace with coal extraction at the Hambach open-pit lignite mine. Both machines were designed around the same core insight: continuous bucket-wheel excavation moves far more material per hour than any cyclic (dig-swing-dump) excavator, at the cost of a machine so large it can only ever work one pit.",
         "components": [
@@ -360,6 +382,8 @@ MACHINES = [
     {
         "slug": "komatsu-4100xpc", "title": "Komatsu P&H 4100XPC", "category": "mining-equipment",
         "summary": "An ultra-class electric rope shovel purpose-built to load the very largest mining haul trucks, using cable and hoist mechanics that predate hydraulic excavators by decades.",
+        "purpose": "Built to load the very largest haul trucks in the fewest possible passes, using cable-and-hoist mechanics because, at this scale, rope still out-lifts hydraulics.",
+        "scale": ("weight", 108.9, "payload per pass"),
         "stats": [("Dipper capacity", "58 – 68 m³"), ("Nominal payload", "~109 t per pass"), ("Drive", "AC electric"), ("Loads trucks up to", "363 t")],
         "history": "The P&H rope-shovel line, now built under Komatsu after its acquisition of P&H Mining, descends from cable shovel designs that predate hydraulic excavators entirely — cable and hoist rigging scales to enormous sizes more readily than hydraulic cylinders do, which is exactly why the largest shovels in the world are still rope shovels rather than hydraulic ones. The 4100XPC sits at the top of that lineage, engineered specifically around loading modern ultra-class haul trucks in as few passes as possible.",
         "components": [
@@ -385,6 +409,8 @@ MACHINES = [
     {
         "slug": "bertha-tbm", "title": "Bertha (Hitachi Zosen TBM)", "category": "underground-equipment",
         "summary": "At 17.5 metres in diameter, the largest earth-pressure-balance tunnel boring machine ever built, bored beneath downtown Seattle to replace the Alaskan Way Viaduct.",
+        "purpose": "Purpose-built for a single bore beneath downtown Seattle — replacing an earthquake-damaged viaduct without digging up the street above it.",
+        "scale": ("length", 17.5, "cutterhead diameter"),
         "stats": [("Diameter", "17.5 m"), ("Length", "99 m"), ("Weight", "~6,700 t"), ("Cutting disks", "600")],
         "history": "Hitachi Zosen built Bertha in Osaka for the Washington State Department of Transportation's Alaskan Way Viaduct replacement project, assembling it in Seattle in mid-2013 for a single, purpose-specific bore. It began tunnelling in July 2013, suffered a major mechanical failure after roughly 1,000 feet that halted work for about two years while it was partially disassembled and repaired in place, and finally completed its bore in 2017.",
         "components": [
@@ -410,6 +436,8 @@ MACHINES = [
     {
         "slug": "sarens-sgc-250", "title": "Sarens SGC-250 “Big Carl”", "category": "industrial-material-handling",
         "summary": "A purpose-built ring crane with a 5,000-tonne maximum lifting capacity, currently the largest land-based crane in the world.",
+        "purpose": "Exists for the single mega-lift that would otherwise take weeks of piecemeal crane work — built specifically for projects like Hinkley Point C's prefabricated reactor modules.",
+        "scale": ("length", 250, "max lift height"),
         "stats": [("Max capacity", "5,000 t"), ("Max boom length", "160 m"), ("Max height", "250 m"), ("Ground pressure system", "Ring-supported, not standard crawlers")],
         "history": "Sarens developed the SGC-250 (Sarens Giant Crane, 250,000 tonne-metre capacity) specifically for a handful of megaprojects too large for any existing mobile or crawler crane, most prominently the Hinkley Point C nuclear power station in the UK, where it lifts entire prefabricated reactor-building modules in single picks that would otherwise require weeks of piecemeal assembly.",
         "components": [
@@ -435,6 +463,8 @@ MACHINES = [
     {
         "slug": "kalmar-dcg330", "title": "Kalmar DCG330", "category": "industrial-material-handling",
         "summary": "A heavy industrial forklift built for handling loaded shipping containers and other massive loads at ports and intermodal yards, at nearly ten times the capacity of a typical warehouse forklift.",
+        "purpose": "Built to lift what a standard warehouse forklift never could — a fully loaded shipping container — without needing a dedicated overhead crane at every terminal.",
+        "scale": ("weight", 33, "max lift capacity"),
         "stats": [("Lift capacity", "up to 33 t"), ("Typical load", "Loaded shipping containers"), ("Drive modes", "Multiple, operator-selectable"), ("Environment", "Ports, heavy industrial yards")],
         "history": "Kalmar's heavy forklift range grew directly out of the container-shipping boom of the late 20th century: standard forklifts topped out at a few tonnes, nowhere near enough to lift a fully loaded ISO shipping container, so an entirely separate class of purpose-built heavy forklift emerged around ports and rail yards. The DCG180–330 series sits at the top of that range, covering the heaviest loads a mast-type forklift, rather than a dedicated container handler, is asked to lift.",
         "components": [
@@ -460,6 +490,8 @@ MACHINES = [
     {
         "slug": "jcb-541-70", "title": "JCB 541-70", "category": "construction-equipment",
         "summary": "A telescopic handler that combines a forklift's carrying capacity with a crane-like telescoping boom, reaching well beyond what any fixed-mast forklift could manage.",
+        "purpose": "Exists to reach both up and out from one machine, covering jobs that would otherwise need a forklift for height and a separate crane for reach.",
+        "scale": ("length", 7, "max lift height"),
         "stats": [("Lift capacity", "4.1 t"), ("Max lift height", "7 m"), ("Boom type", "Single telescoping section"), ("Typical use", "Construction, agriculture")],
         "history": "Telehandlers emerged from the recognition that construction and farm sites often need to lift a load both up and out — over a wall, into an upper floor, or across a trench — something neither a forklift's vertical mast nor a crane's slower rigging handles well on its own. JCB, one of the type's pioneering manufacturers since the 1970s, has kept refining the format ever since; the 541-70 represents the mid-size class most common on general construction sites.",
         "components": [
@@ -485,6 +517,8 @@ MACHINES = [
     {
         "slug": "john-deere-x9-1100", "title": "John Deere X9 1100", "category": "agricultural-machinery",
         "summary": "John Deere's flagship combine harvester, built around a twin-rotor threshing system specifically to keep pace with the widest headers and highest field speeds in modern grain harvesting.",
+        "purpose": "Built to remove the threshing bottleneck that limited how wide a header a combine could actually keep fed, so operators can harvest more acres inside a short weather window.",
+        "scale": ("weight", 12.5, "grain tank's contents, at typical wheat bulk density"),
         "stats": [("Engine power", "690 hp"), ("Grain tank capacity", "16,210 L"), ("Rotors", "Twin 24-inch"), ("Peak unload rate", "5.3 bu/s")],
         "history": "Combine harvesters have grown steadily larger for the same reason every machine on this page has: a wider, faster machine covers more acres per labour-hour, which matters enormously during a harvest window that can close in days if weather turns. John Deere's X9 series, introduced in the early 2020s, was purpose-built around a completely new twin-rotor separation system specifically to remove the throughput bottleneck that limited how wide a header the company's previous single-rotor combines could actually keep fed.",
         "components": [
@@ -510,6 +544,8 @@ MACHINES = [
     {
         "slug": "john-deere-9rx", "title": "John Deere 9RX", "category": "agricultural-machinery",
         "summary": "John Deere's largest row-crop tractor, running on four independent tracks instead of wheels to put record horsepower onto soft ground without compacting it.",
+        "purpose": "Exists to put record horsepower on the ground without compacting the soil underneath it — the one trade-off a wheeled tractor at this power level can't avoid.",
+        "scale": ("weight", 38.1, "max ballast it can carry"),
         "stats": [("Max horsepower", "830 hp"), ("Track configuration", "4-track articulated"), ("Hydraulic flow", "168 gal/min"), ("Max ballast", "up to 84,000 lb")],
         "history": "John Deere's 9RX line pushed row-crop tractor horsepower to new highs through the 2010s and 2020s specifically by pairing ever-larger engines with four-track undercarriages instead of the twin-track or wheeled designs common at lower power levels — more contact area spreads the same weight over more soil, reducing the compaction that otherwise undoes much of the benefit of a bigger tractor. The current top model, the 9RX 830, tops the lineup at 830 horsepower.",
         "components": [
@@ -535,6 +571,8 @@ MACHINES = [
     {
         "slug": "john-deere-r4045", "title": "John Deere R4045", "category": "agricultural-machinery",
         "summary": "A self-propelled sprayer built to cover wide swaths of cropland quickly and precisely, applying crop protection products through booms that can stretch well beyond a football field's width.",
+        "purpose": "Built to apply crop protection across an entire field width in a fraction of the passes a smaller sprayer would need, when a treatment window can close in days.",
+        "scale": ("length", 36.6, "max boom span"),
         "stats": [("Engine power", "346 hp"), ("Tank capacity", "1,200 gal"), ("Boom width", "90 – 120 ft"), ("Max application rate", "230 gal/min")],
         "history": "Self-propelled sprayers replaced towed, tractor-pulled sprayers for large operations because a dedicated chassis can be built taller (clearing standing crop without damaging it), lighter per unit of ground pressure, and faster across the field between fills. John Deere introduced the R4045 as, at the time, the largest sprayer in its Class 4 lineup, built specifically around wider booms and a bigger tank than the machines it replaced.",
         "components": [
@@ -560,6 +598,8 @@ MACHINES = [
     {
         "slug": "epiroc-pv351", "title": "Epiroc Pit Viper 351", "category": "mining-equipment",
         "summary": "A rotary blasthole drill rig built to bore the deep, wide holes mines fill with explosives to fracture rock ahead of loading — one of the largest rotary drills in regular production.",
+        "purpose": "Exists purely to prepare rock for blasting — drilling the holes a mine later fills with explosives, a job that has to finish before any of the site's excavators can start.",
+        "scale": ("length", 19.8, "single-pass drill depth"),
         "stats": [("Hole diameter", "270 – 406 mm"), ("Single-pass depth", "19.8 m"), ("Bit load capacity", "56.7 t"), ("Drilling method", "Rotary tricone")],
         "history": "Rotary blasthole drilling replaced older percussion drilling methods at large open-pit mines because rotary bits, under enough downward force, cut faster and more consistently through hard rock at the diameters mine blasting patterns actually need. Atlas Copco (now Epiroc, after the 2018 split) developed the Pit Viper line specifically for this large-diameter, high-productivity segment, with the 351 sitting near the top of the range.",
         "components": [
@@ -585,6 +625,8 @@ MACHINES = [
     {
         "slug": "ponsse-bear", "title": "Ponsse Bear", "category": "forestry-machinery",
         "summary": "An eight-wheeled forest harvester built to fell, delimb, and cut trees to length in a single continuous operation, sized for the largest timber a wheeled harvester is asked to handle.",
+        "purpose": "Built for timber too large for Ponsse's mid-size harvesters, doing the felling, delimbing, and cutting-to-length in one pass instead of three separate machine trips.",
+        "scale": ("torque", 1450, "engine torque"),
         "stats": [("Engine power", "354 hp"), ("Wheel configuration", "8-wheel"), ("Harvester head", "Felling, delimbing, bucking"), ("Engine torque", "1,450 N·m")],
         "history": "Mechanised harvesting replaced chainsaw felling crews across much of the industrialised forestry world from the late 20th century onward, driven by the same labour-productivity and safety logic behind every large machine on this site. Ponsse, a Finnish forestry-equipment specialist, introduced the Bear as its largest harvester specifically to handle bigger timber than its mid-size models, using an eight-wheel chassis for the flotation and stability that size of tree demands.",
         "components": [
@@ -610,6 +652,8 @@ MACHINES = [
     {
         "slug": "konecranes-rtg", "title": "Konecranes RTG", "category": "industrial-material-handling",
         "summary": "A rubber-tyred gantry crane that straddles multiple lanes of stacked shipping containers, moving on its own tyres between container blocks rather than running on fixed rails.",
+        "purpose": "Exists to keep a container yard's stacks organised and moving without needing fixed rail infrastructure, repositioning between blocks under its own power as vessel schedules shift.",
+        "scale": ("weight", 65, "max lift capacity"),
         "stats": [("Lifting capacity", "up to 65 t under spreader"), ("Span", "up to 8 container rows + truck lane"), ("Stack height", "up to 1-over-6"), ("Power options", "Diesel, hybrid, electric, battery")],
         "history": "Container terminals adopted gantry cranes broadly as container shipping scaled through the late 20th century, needing something faster and more space-efficient than mobile cranes or forklifts stacking boxes several high. Rubber-tyred gantries in particular offered an advantage rail-mounted gantries couldn't: the ability to reposition between different container blocks without fixed rail infrastructure, at some cost in precision and speed compared to a railed system.",
         "components": [
@@ -635,6 +679,8 @@ MACHINES = [
     {
         "slug": "m1150-abv", "title": "M1150 Assault Breacher Vehicle", "category": "military-engineering-vehicles",
         "summary": "A U.S. military combat engineering vehicle built on the M1 Abrams tank chassis, purpose-designed to clear paths through minefields and obstacle belts ahead of advancing forces.",
+        "purpose": "Built for exactly one mission: clearing a path through mines and obstacle belts before anyone else in the formation has to cross them.",
+        "scale": ("weight", 72, None),
         "stats": [("Base chassis", "M1A1 Abrams"), ("Weight", "~72 t"), ("Engine", "Honeywell AGT1500C, 1,500 hp"), ("Primary tools", "Mine plow, line charges")],
         "history": "Combat engineering vehicles built on main battle tank chassis date back decades, on the logic that a vehicle clearing a path under fire needs the same armour protection as the tanks following behind it. The M1150 ABV replaced earlier, less-protected mine-clearing vehicles by mounting breaching equipment directly onto a standard M1A1 Abrams hull, giving breaching crews the same survivability as the armoured units they support.",
         "components": [
@@ -660,6 +706,8 @@ MACHINES = [
     {
         "slug": "spartacus-dredger", "title": "Spartacus (Cutter Suction Dredger)", "category": "special-purpose-machines",
         "summary": "The most powerful cutter suction dredger ever built, and the first in the world powered by LNG, engineered to cut through harder seabed material at greater depth than any dredger before it.",
+        "purpose": "Exists to cut through harder seabed material at greater depth than any dredger before it, while running on a fuel — LNG — nothing else in its class used yet.",
+        "scale": ("length", 164, "overall length"),
         "stats": [("Installed power", "44,180 kW"), ("Length", "164 m"), ("Max dredging depth", "45 m"), ("Fuel", "LNG (first of its kind)")],
         "history": "Belgian dredging contractor DEME commissioned Spartacus from Dutch shipbuilder Royal IHC specifically to reach seabed material at depths and hardness beyond what the existing dredging fleet could economically handle, delivered in 2019 as, at the time, the most powerful cutter suction dredger in the world. Its LNG propulsion was a deliberate first for the class, aimed at cutting emissions from a vessel that otherwise burns enormous amounts of fuel continuously during operation.",
         "components": [
@@ -695,6 +743,46 @@ def stat_row(stats):
         for k, v in stats
     )
     return '<div class="stat-row">%s</div>' % cells
+
+
+# Illustrative human reference points used only for the hero "scale comparison" —
+# an average adult's height/weight/hand-twist, not a spec of any machine.
+HUMAN_REF = {"weight": (0.075, "t", "an average adult's weight (~75 kg)"), "length": (1.8, "m", "an average adult's height (1.8 m)"), "torque": (10, "N·m", "a firm human hand-twist (~10 N·m)")}
+
+
+def scale_compare_svg(kind, value, label=None):
+    ref, unit, refword = HUMAN_REF[kind]
+    ratio = value / ref
+    human_h = 34
+    bar_h = min(150, human_h * math.sqrt(ratio))
+    vb_h = 170
+    human_y = vb_h - 14 - human_h
+    bar_y = vb_h - 14 - bar_h
+    desc = label or {"weight": "weight", "length": "size", "torque": "torque"}[kind]
+    svg = (
+        '<svg viewBox="0 0 150 %d" role="img" aria-label="Scale comparison: %s versus %s">'
+        '<line x1="4" y1="%d" x2="146" y2="%d" stroke="#c3c9ce" stroke-width="2"/>'
+        '<circle cx="26" cy="%d" r="7" fill="#5b6672"/>'
+        '<rect x="19" y="%d" width="14" height="%d" rx="4" fill="#5b6672"/>'
+        '<text x="26" y="%d" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8a92a0">1.8 m</text>'
+        '<rect x="90" y="%.1f" width="40" height="%.1f" rx="3" fill="#2454c7"/>'
+        '<text x="110" y="%.1f" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#2454c7">%s×</text>'
+        '</svg>'
+        % (
+            vb_h, esc(desc), esc(refword),
+            vb_h - 14, vb_h - 14,
+            human_y + 7,
+            human_y + 14, human_h - 14,
+            vb_h - 2,
+            bar_y, bar_h,
+            max(bar_y - 8, 10), "{:,.0f}".format(ratio),
+        )
+    )
+    caption = (
+        '<p class="sc-caption">%s: <strong>%s %s</strong> — about <strong>%s×</strong> %s. (Bar height is compressed for very large ratios; the multiplier is exact.)</p>'
+        % (desc.capitalize(), value, unit, "{:,.0f}".format(ratio), refword)
+    )
+    return '<div class="scale-compare">%s%s</div>' % (svg, caption)
 
 
 def component_list(items):
@@ -818,17 +906,24 @@ def render_machine(m, concepts_by_slug):
     body.append('<h1>%s</h1>' % m["title"])
     body.append('<p class="lede">%s</p>' % m["summary"])
     body.append(stat_row(m["stats"]))
+    scale_kind, scale_val, scale_label = m["scale"]
+    body.append(scale_compare_svg(scale_kind, scale_val, scale_label))
     body.append('</section>')
 
-    body.append('<section class="block" id="overview"><h2><span class="n">01</span>Overview</h2><p>%s</p></section>' % m["summary"])
-    body.append('<section class="block" id="history"><h2><span class="n">02</span>Historical Development</h2><p>%s</p></section>' % m["history"])
-    body.append('<section class="block" id="components"><h2><span class="n">03</span>Core Components</h2>%s</section>' % component_list(m["components"]))
-    body.append('<section class="block" id="how-it-works"><h2><span class="n">04</span>How It Works</h2><p>%s</p></section>' % m["how_it_works"])
-    body.append('<section class="block" id="principles"><h2><span class="n">05</span>Engineering Principles</h2>%s</section>' % concept_grid(m["principles"], concepts_by_slug))
-    body.append('<section class="block" id="performance"><h2><span class="n">06</span>Performance Characteristics</h2>%s</section>' % spec_table(m["performance"]))
-    body.append('<section class="block" id="examples"><h2><span class="n">07</span>Notable Examples</h2>%s</section>' % example_list(m["examples"]))
-    body.append('<section class="block" id="facts"><h2><span class="n">08</span>Interesting Facts</h2>%s</section>' % facts_list(m["facts"]))
-    body.append('<section class="block" id="related"><h2><span class="n">09</span>Related Machines</h2><div id="relatedMachines" class="related-grid"></div></section>')
+    sections = [
+        ("overview", "Overview", '<p>%s</p>' % m["summary"]),
+        ("purpose", "Purpose", '<p>%s</p>' % m["purpose"]),
+        ("history", "Historical Development", '<p>%s</p>' % m["history"]),
+        ("components", "Core Components", component_list(m["components"])),
+        ("how-it-works", "How It Works", '<p>%s</p>' % m["how_it_works"]),
+        ("principles", "Engineering Principles", concept_grid(m["principles"], concepts_by_slug)),
+        ("performance", "Performance Characteristics", spec_table(m["performance"])),
+        ("examples", "Notable Examples", example_list(m["examples"])),
+        ("facts", "Interesting Facts", facts_list(m["facts"])),
+        ("related", "Related Machines", '<div id="relatedMachines" class="related-grid"></div>'),
+    ]
+    for i, (sec_id, title, inner) in enumerate(sections, 1):
+        body.append('<section class="block" id="%s"><h2><span class="n">%02d</span>%s</h2>%s</section>' % (sec_id, i, title, inner))
     body.append('</main>')
 
     pagedata = json.dumps({"type": "machine", "slug": m["slug"], "category": m["category"], "principles": [p[0] for p in m["principles"]]})
@@ -862,27 +957,25 @@ def render_concept(c):
     body.append(stat_row(c["stats"]))
     body.append('</section>')
 
-    body.append('<section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>%s</p></section>' % c["definition"])
-    body.append('<section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>%s</p></section>' % c["principle"])
-    body.append('<section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2>%s</section>' % formula_boxes(c["formulas"]))
-
+    sections = [
+        ("definition", "Definition", '<p>%s</p>' % c["definition"]),
+        ("principle", "Physical Principle", '<p>%s</p>' % c["principle"]),
+        ("math", "Mathematical Foundation", formula_boxes(c["formulas"])),
+    ]
     interactive = c.get("interactive")
-    if interactive == "gear-ratio":
-        body.append(GEAR_SIM_HTML)
-    elif interactive == "hydraulic-force":
-        body.append(HYDRAULIC_SIM_HTML)
-
-    body.append('<section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2>%s</section>' % facts_list(c["facts"]))
-    body.append('<section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>')
-    body.append('<section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>')
+    if interactive in INTERACTIVE_HTML:
+        sections.append(("interactive", "Interactive Diagram — " + INTERACTIVE_TITLE[interactive], INTERACTIVE_HTML[interactive]))
+    sections += [
+        ("facts", "Interesting Facts", facts_list(c["facts"])),
+        ("applications", "Real-World Applications", '<div id="realWorldApplications" class="related-grid"></div>'),
+        ("related", "Related Concepts", '<div id="relatedConcepts" class="related-grid"></div>'),
+    ]
+    for i, (sec_id, title, inner) in enumerate(sections, 1):
+        body.append('<section class="block" id="%s"><h2><span class="n">%02d</span>%s</h2>%s</section>' % (sec_id, i, title, inner))
     body.append('</main>')
 
     pagedata = json.dumps({"type": "concept", "slug": c["slug"], "domain": c["domain"], "relatedConcepts": c.get("related_concepts", [])})
-    interactive_js = ""
-    if interactive == "gear-ratio":
-        interactive_js = GEAR_SIM_JS
-    elif interactive == "hydraulic-force":
-        interactive_js = HYDRAULIC_SIM_JS
+    interactive_js = INTERACTIVE_JS.get(interactive, "")
     foot = FOOT_TMPL.format(base=BASE, pagedata=pagedata)
     if interactive_js:
         foot = foot.replace("</body>", interactive_js + "\n</body>")
@@ -893,18 +986,16 @@ def render_concept(c):
 # Bespoke interactive primitives (Sheet 04, primitives 2 & 4)
 # ------------------------------------------------------------------
 GEAR_SIM_HTML = """
-<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Gear Pair Simulator</h2>
 <p>Set the tooth count on the driving gear (A) and the driven gear (B) and watch the ratio, output speed, and torque multiplication update live.</p>
 <div class="sim-panel">
-  <div class="gear-viewport"><svg id="gearSvg" viewBox="0 0 300 300" width="100%" height="100%" role="img" aria-label="Two meshed gears rotating according to the chosen tooth counts"></svg></div>
+  <div class="viewport"><svg id="gearSvg" viewBox="0 0 300 300" width="100%" height="100%" role="img" aria-label="Two meshed gears rotating according to the chosen tooth counts"></svg></div>
   <div class="sim-row"><span>TEETH ON A (driving)</span><span class="mono" id="teethAVal">20</span></div>
   <input id="teethASlider" type="range" min="8" max="60" step="1" value="20">
   <div class="sim-row"><span>TEETH ON B (driven)</span><span class="mono" id="teethBVal">40</span></div>
   <input id="teethBSlider" type="range" min="8" max="60" step="1" value="40">
   <div class="sim-readout" id="gearReadout"></div>
   <p class="sim-note">Input speed fixed at 1,000 RPM on gear A.</p>
-</div>
-</section>"""
+</div>"""
 
 GEAR_SIM_JS = """
 <script>
@@ -960,18 +1051,16 @@ GEAR_SIM_JS = """
 </script>"""
 
 HYDRAULIC_SIM_HTML = """
-<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Hydraulic Force Multiplier</h2>
 <p>Set the input piston force and the ratio between the two piston areas to see how much force the output piston delivers.</p>
 <div class="sim-panel">
-  <div class="gear-viewport"><svg id="hydSvg" viewBox="0 0 340 220" width="100%" height="100%" role="img" aria-label="Two connected hydraulic cylinders of different piston area"></svg></div>
+  <div class="viewport"><svg id="hydSvg" viewBox="0 0 340 220" width="100%" height="100%" role="img" aria-label="Two connected hydraulic cylinders of different piston area"></svg></div>
   <div class="sim-row"><span>INPUT FORCE</span><span class="mono" id="hydForceVal">50 kg</span></div>
   <input id="hydForceSlider" type="range" min="5" max="200" step="1" value="50">
   <div class="sim-row"><span>OUTPUT / INPUT AREA RATIO</span><span class="mono" id="hydRatioVal">10 : 1</span></div>
   <input id="hydRatioSlider" type="range" min="1" max="30" step="1" value="10">
   <div class="sim-readout" id="hydReadout"></div>
   <p class="sim-note">Pressure is transmitted equally throughout the fluid — only the piston areas differ.</p>
-</div>
-</section>"""
+</div>"""
 
 HYDRAULIC_SIM_JS = """
 <script>
@@ -1013,6 +1102,424 @@ HYDRAULIC_SIM_JS = """
 })();
 </script>"""
 
+TORQUE_SIM_HTML = """
+<p>Slide the applied force and the lever-arm length to see how the torque at the pivot responds.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="trqSvg" viewBox="0 0 300 220" width="100%" height="100%" role="img" aria-label="A force applied at a distance from a pivot, producing torque"></svg></div>
+  <div class="sim-row"><span>FORCE</span><span class="mono" id="trqForceVal">200 N</span></div>
+  <input id="trqForceSlider" type="range" min="20" max="500" step="10" value="200">
+  <div class="sim-row"><span>LEVER ARM</span><span class="mono" id="trqArmVal">1.0 m</span></div>
+  <input id="trqArmSlider" type="range" min="0.2" max="3" step="0.1" value="1.0">
+  <div class="sim-readout" id="trqReadout"></div>
+  <p class="sim-note">τ = F × r — the same force produces more torque the farther it acts from the pivot.</p>
+</div>"""
+
+TORQUE_SIM_JS = """
+<script>
+(function(){
+  var f=document.getElementById('trqForceSlider'), r=document.getElementById('trqArmSlider');
+  var fVal=document.getElementById('trqForceVal'), rVal=document.getElementById('trqArmVal');
+  var svg=document.getElementById('trqSvg'), readout=document.getElementById('trqReadout');
+  if(!f||!r||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  function draw(){
+    var force=parseFloat(f.value), arm=parseFloat(r.value);
+    fVal.textContent=force+' N'; rVal.textContent=arm.toFixed(1)+' m';
+    var torque=force*arm;
+    var px=40, py=180, scale=70;
+    var ex=px+arm*scale, ey=py;
+    svg.innerHTML='';
+    svg.appendChild(ns('polygon',{points:(px-10)+','+(py+18)+' '+(px+10)+','+(py+18)+' '+px+','+py, fill:'#151a1f'}));
+    svg.appendChild(ns('line',{x1:px,y1:py,x2:ex,y2:ey, stroke:'#2454c7','stroke-width':6,'stroke-linecap':'round'}));
+    var arrowLen=Math.min(110, 20+force/6);
+    svg.appendChild(ns('line',{x1:ex,y1:ey-arrowLen,x2:ex,y2:ey-6, stroke:'#c1541d','stroke-width':4}));
+    svg.appendChild(ns('polygon',{points:(ex-7)+','+(ey-16)+' '+(ex+7)+','+(ey-16)+' '+ex+','+(ey-2), fill:'#c1541d'}));
+    var lbl=ns('text',{x:ex,y:Math.max(16,ey-arrowLen-8),'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'11','font-weight':'700',fill:'#c1541d'}); lbl.textContent='F'; svg.appendChild(lbl);
+    var cells=[['FORCE',force+' N'],['LEVER ARM',arm.toFixed(1)+' m'],['TORQUE',torque.toFixed(0)+' N·m']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  f.addEventListener('input',draw); r.addEventListener('input',draw);
+  draw();
+})();
+</script>"""
+
+MA_SIM_HTML = """
+<p>Slide the fulcrum position between a fixed effort and a fixed 500&nbsp;kg load to see how mechanical advantage — and the effort actually needed — changes.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="maSvg" viewBox="0 0 300 200" width="100%" height="100%" role="img" aria-label="A lever balancing an effort force against a fixed load, with a movable fulcrum"></svg></div>
+  <div class="sim-row"><span>FULCRUM POSITION (from effort side)</span><span class="mono" id="maFulcrumVal">30%</span></div>
+  <input id="maFulcrumSlider" type="range" min="10" max="90" step="1" value="30">
+  <div class="sim-readout" id="maReadout"></div>
+  <p class="sim-note">Load fixed at 500 kg. Moving the fulcrum toward the load shortens the load arm and raises mechanical advantage.</p>
+</div>"""
+
+MA_SIM_JS = """
+<script>
+(function(){
+  var s=document.getElementById('maFulcrumSlider'), val=document.getElementById('maFulcrumVal');
+  var svg=document.getElementById('maSvg'), readout=document.getElementById('maReadout');
+  if(!s||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var load=500, x0=30, x1=270, beamRealM=2.0, y=130;
+  function draw(){
+    var pct=parseInt(s.value,10); val.textContent=pct+'%';
+    var fx=x0+(x1-x0)*(pct/100);
+    var effortPx=fx-x0, loadPx=x1-fx;
+    var mPerPx=beamRealM/(x1-x0);
+    var effortArm=effortPx*mPerPx, loadArm=loadPx*mPerPx;
+    var ma=effortArm/loadArm, effortNeeded=load/ma;
+    svg.innerHTML='';
+    svg.appendChild(ns('line',{x1:x0,y1:y,x2:x1,y2:y, stroke:'#2454c7','stroke-width':6,'stroke-linecap':'round'}));
+    svg.appendChild(ns('polygon',{points:(fx-12)+','+(y+22)+' '+(fx+12)+','+(y+22)+' '+fx+','+y, fill:'#151a1f'}));
+    svg.appendChild(ns('circle',{cx:x0,cy:y-24,r:12,fill:'none',stroke:'#c1541d','stroke-width':3}));
+    svg.appendChild(ns('line',{x1:x0,y1:y-12,x2:x0,y2:y, stroke:'#c1541d','stroke-width':3}));
+    svg.appendChild(ns('rect',{x:x1-16,y:y-34,width:32,height:32,fill:'#5b6672'}));
+    var t1=ns('text',{x:x0,y:y-46,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'10',fill:'#c1541d'}); t1.textContent='EFFORT'; svg.appendChild(t1);
+    var t2=ns('text',{x:x1,y:y-42,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'10',fill:'#5b6672'}); t2.textContent='LOAD'; svg.appendChild(t2);
+    var cells=[['EFFORT ARM',effortArm.toFixed(2)+' m'],['LOAD ARM',loadArm.toFixed(2)+' m'],['MECHANICAL ADVANTAGE',ma.toFixed(2)+' : 1'],['EFFORT NEEDED',effortNeeded.toFixed(0)+' kg']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  s.addEventListener('input',draw);
+  draw();
+})();
+</script>"""
+
+PLANETARY_SIM_HTML = """
+<p>Choose which member is held fixed and watch the other two rotate at the resulting speed — the same three gears, three different outcomes.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="planetSvg" viewBox="0 0 300 300" width="100%" height="100%" role="img" aria-label="A planetary gearset: sun, planets, and ring, with one member held fixed"></svg></div>
+  <div class="sim-btn-row">
+    <button type="button" class="sim-btn active" data-mode="ring">Ring Fixed</button>
+    <button type="button" class="sim-btn" data-mode="carrier">Carrier Fixed</button>
+    <button type="button" class="sim-btn" data-mode="sun">Sun Fixed</button>
+  </div>
+  <div class="sim-readout" id="planetReadout"></div>
+  <p class="sim-note">Sun = 24 teeth, ring = 72 teeth throughout — only which member is held changes the outcome.</p>
+</div>"""
+
+PLANETARY_SIM_JS = """
+<script>
+(function(){
+  var svg=document.getElementById('planetSvg'), readout=document.getElementById('planetReadout');
+  var btns=document.querySelectorAll('.sim-btn[data-mode]');
+  if(!svg||!btns.length) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var Nsun=24, Nring=72, cx=150, cy=150, mode='ring';
+  var style=document.createElement('style');
+  style.textContent='@keyframes pspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@keyframes pspin-rev{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}@media (prefers-reduced-motion:reduce){#planetSvg g{animation:none!important;}}';
+  document.head.appendChild(style);
+  function outcome(){
+    if(mode==='ring') return {sun:1000, carrier:1000/(1+Nring/Nsun), ring:0, fixed:'RING', out:'CARRIER', ratio:1/(1+Nring/Nsun)};
+    if(mode==='carrier') return {sun:1000, carrier:0, ring:-1000*(Nsun/Nring), fixed:'CARRIER', out:'RING', ratio:-(Nsun/Nring)};
+    return {sun:0, carrier:1000, ring:1000*((Nring+Nsun)/Nring), fixed:'SUN', out:'RING', ratio:(Nring+Nsun)/Nring};
+  }
+  function spinStyle(rpm){
+    if(Math.abs(rpm)<1) return 'animation:none;';
+    var dur=(60/Math.abs(rpm*0.15)).toFixed(1);
+    return 'transform-origin:'+cx+'px '+cy+'px; animation:'+(rpm>0?'pspin':'pspin-rev')+' '+dur+'s linear infinite;';
+  }
+  function draw(){
+    var o=outcome();
+    svg.innerHTML='';
+    var ring=ns('g',{style:spinStyle(o.ring)});
+    ring.appendChild(ns('circle',{cx:cx,cy:cy,r:110,fill:'none',stroke:'#c1541d','stroke-width':6}));
+    ring.appendChild(ns('line',{x1:cx,y1:cy-110,x2:cx,y2:cy-98,stroke:'#c1541d','stroke-width':4}));
+    svg.appendChild(ring);
+    var carrier=ns('g',{style:spinStyle(o.carrier)});
+    for(var i=0;i<3;i++){
+      var ang=(i/3)*Math.PI*2, px=cx+Math.cos(ang)*70, py=cy+Math.sin(ang)*70;
+      carrier.appendChild(ns('line',{x1:cx,y1:cy,x2:px,y2:py,stroke:'#8a92a0','stroke-width':2}));
+      carrier.appendChild(ns('circle',{cx:px,cy:py,r:16,fill:'#f7e8df',stroke:'#c1541d','stroke-width':1.5}));
+    }
+    svg.appendChild(carrier);
+    var sun=ns('g',{style:spinStyle(o.sun)});
+    sun.appendChild(ns('circle',{cx:cx,cy:cy,r:34,fill:'#e8edfb',stroke:'#2454c7','stroke-width':1.5}));
+    sun.appendChild(ns('line',{x1:cx,y1:cy,x2:cx,y2:cy-34,stroke:'#2454c7','stroke-width':3}));
+    svg.appendChild(sun);
+    var cells=[['FIXED MEMBER',o.fixed],['SUN RPM',o.sun.toFixed(0)],['CARRIER RPM',o.carrier.toFixed(0)],['RING RPM',o.ring.toFixed(0)]];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      mode=b.getAttribute('data-mode');
+      draw();
+    });
+  });
+  draw();
+})();
+</script>"""
+
+CYLINDER_SIM_HTML = """
+<p>Set the cylinder's bore and the pump's flow rate at a fixed 250 bar working pressure to see the force it pushes with, and how fast the rod extends.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="cylSvg" viewBox="0 0 300 180" width="100%" height="100%" role="img" aria-label="A hydraulic cylinder extending, driven by pressurised flow"></svg></div>
+  <div class="sim-row"><span>BORE DIAMETER</span><span class="mono" id="cylBoreVal">100 mm</span></div>
+  <input id="cylBoreSlider" type="range" min="50" max="300" step="5" value="100">
+  <div class="sim-row"><span>PUMP FLOW RATE</span><span class="mono" id="cylFlowVal">80 L/min</span></div>
+  <input id="cylFlowSlider" type="range" min="10" max="400" step="5" value="80">
+  <div class="sim-readout" id="cylReadout"></div>
+  <p class="sim-note">Working pressure fixed at 250 bar. Animation speed is illustrative, not real-time.</p>
+</div>"""
+
+CYLINDER_SIM_JS = """
+<script>
+(function(){
+  var bore=document.getElementById('cylBoreSlider'), flow=document.getElementById('cylFlowSlider');
+  var boreVal=document.getElementById('cylBoreVal'), flowVal=document.getElementById('cylFlowVal');
+  var svg=document.getElementById('cylSvg'), readout=document.getElementById('cylReadout');
+  if(!bore||!flow||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var P=25000000, strokePx=120, rodEl=null;
+  var style=document.createElement('style');
+  document.head.appendChild(style);
+  function draw(){
+    var d=parseFloat(bore.value), q=parseFloat(flow.value);
+    boreVal.textContent=d+' mm'; flowVal.textContent=q+' L/min';
+    var A=Math.PI*Math.pow(d/2000,2);
+    var F=P*A, tonnes=F/9810, kN=F/1000;
+    var flowM3s=(q/1000)/60, v=flowM3s/A;
+    var periodS=Math.max(0.5,Math.min(4,4/(0.2+v)));
+    style.textContent='@keyframes cylext{0%{transform:translateX(0)}50%{transform:translateX('+strokePx+'px)}100%{transform:translateX(0)}}@media (prefers-reduced-motion:reduce){#cylRod{animation:none!important;}}';
+    var bodyH=20+d*0.3;
+    svg.innerHTML='';
+    svg.appendChild(ns('rect',{x:20,y:90-bodyH/2,width:70,height:bodyH,fill:'none',stroke:'#151a1f','stroke-width':2}));
+    var rodGroup=ns('g',{id:'cylRod',style:'animation:cylext '+periodS.toFixed(2)+'s ease-in-out infinite;'});
+    rodGroup.appendChild(ns('rect',{x:82,y:90-6,width:180,height:12,fill:'#2454c7'}));
+    rodGroup.appendChild(ns('rect',{x:250,y:90-18,width:14,height:36,fill:'#151a1f'}));
+    svg.appendChild(rodGroup);
+    var lbl=ns('text',{x:55,y:90+bodyH/2+18,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'10',fill:'#5b6672'}); lbl.textContent='BORE '+d+' mm'; svg.appendChild(lbl);
+    var cells=[['BORE',d+' mm'],['FLOW',q+' L/min'],['FORCE',kN.toFixed(0)+' kN ('+tonnes.toFixed(1)+' t)'],['ROD SPEED',(v*1000).toFixed(0)+' mm/s']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  bore.addEventListener('input',draw); flow.addEventListener('input',draw);
+  draw();
+})();
+</script>"""
+
+FOURSTROKE_SIM_HTML = """
+<p>Press play to step through one full four-stroke cycle — intake, compression, power, exhaust — two crankshaft revolutions per cycle.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="fsSvg" viewBox="0 0 200 260" width="100%" height="100%" role="img" aria-label="A piston moving through the four-stroke diesel cycle"></svg></div>
+  <div class="sim-btn-row"><button type="button" class="sim-btn" id="fsPlayBtn">▶ Play</button></div>
+  <div class="sim-row"><span>CYCLE SPEED</span><span class="mono" id="fsSpeedVal">3×</span></div>
+  <input id="fsSpeedSlider" type="range" min="1" max="8" step="1" value="3">
+  <div class="sim-readout" id="fsReadout"></div>
+  <p class="sim-note">Piston motion is simplified for clarity, not exact crank geometry.</p>
+</div>"""
+
+FOURSTROKE_SIM_JS = """
+<script>
+(function(){
+  var svg=document.getElementById('fsSvg'), playBtn=document.getElementById('fsPlayBtn');
+  var speed=document.getElementById('fsSpeedSlider'), speedVal=document.getElementById('fsSpeedVal'), readout=document.getElementById('fsReadout');
+  if(!svg||!playBtn) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var angle=0, running=false, lastT=null;
+  var stages=['INTAKE','COMPRESSION','POWER','EXHAUST'];
+  var colors=['#2454c7','#5b6672','#c1541d','#8a92a0'];
+  function draw(){
+    var stageIdx=Math.floor((angle%720)/180);
+    var pistonY=60+ (1-Math.cos(angle*Math.PI/180))*40;
+    svg.innerHTML='';
+    svg.appendChild(ns('rect',{x:60,y:20,width:80,height:160,fill:'none',stroke:'#151a1f','stroke-width':2}));
+    var intakeOpen=stageIdx===0, exhaustOpen=stageIdx===3;
+    svg.appendChild(ns('rect',{x:66,y:14,width:20,height:10,fill:intakeOpen?'#2454c7':'#c3c9ce'}));
+    svg.appendChild(ns('rect',{x:114,y:14,width:20,height:10,fill:exhaustOpen?'#c1541d':'#c3c9ce'}));
+    if(stageIdx===2 && (angle%720)<380){
+      svg.appendChild(ns('circle',{cx:100,cy:30,r:5,fill:'#c1541d'}));
+    }
+    svg.appendChild(ns('rect',{x:65,y:pistonY,width:70,height:28,fill:colors[stageIdx]}));
+    svg.appendChild(ns('line',{x1:100,y1:pistonY+28,x2:100,y2:220,stroke:'#151a1f','stroke-width':4}));
+    svg.appendChild(ns('circle',{cx:100,cy:220,r:22,fill:'none',stroke:'#151a1f','stroke-width':3}));
+    var crankX=100+22*Math.cos(angle*Math.PI/180), crankY=220+22*Math.sin(angle*Math.PI/180);
+    svg.appendChild(ns('circle',{cx:crankX,cy:crankY,r:5,fill:'#151a1f'}));
+    var lbl=ns('text',{x:100,y:250,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'13','font-weight':'700',fill:colors[stageIdx]}); lbl.textContent=stages[stageIdx]; svg.appendChild(lbl);
+    if(readout) readout.innerHTML='<div class="cell"><span class="l">STAGE</span><span class="v">'+stages[stageIdx]+'</span></div><div class="cell"><span class="l">CRANK ANGLE</span><span class="v">'+Math.round(angle%720)+'°</span></div>';
+  }
+  function frame(t){
+    if(!running) return;
+    if(lastT!=null){
+      var dt=(t-lastT)/1000;
+      angle=(angle+dt*parseFloat(speed.value)*90)%720;
+    }
+    lastT=t;
+    draw();
+    requestAnimationFrame(frame);
+  }
+  playBtn.addEventListener('click',function(){
+    running=!running;
+    playBtn.textContent=running?'⏸ Pause':'▶ Play';
+    if(running){ lastT=null; requestAnimationFrame(frame); }
+  });
+  speed.addEventListener('input',function(){ speedVal.textContent=speed.value+'×'; });
+  draw();
+})();
+</script>"""
+
+TCONV_SIM_HTML = """
+<p>Slide the turbine-to-impeller speed ratio to see torque multiplication fall from its peak near stall to 1:1 once both sides spin together.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="tcSvg" viewBox="0 0 300 220" width="100%" height="100%" role="img" aria-label="A torque-multiplication curve against turbine speed ratio, with a marker at the current point"></svg></div>
+  <div class="sim-row"><span>SPEED RATIO (turbine / impeller)</span><span class="mono" id="tcRatioVal">0.20</span></div>
+  <input id="tcRatioSlider" type="range" min="0" max="100" step="1" value="20">
+  <div class="sim-readout" id="tcReadout"></div>
+  <p class="sim-note">Input torque fixed at 500 N·m. Multiplication tapers to 1:1 once impeller and turbine converge — the coupling point.</p>
+</div>"""
+
+TCONV_SIM_JS = """
+<script>
+(function(){
+  var s=document.getElementById('tcRatioSlider'), val=document.getElementById('tcRatioVal');
+  var svg=document.getElementById('tcSvg'), readout=document.getElementById('tcReadout');
+  if(!s||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  function tr(ratio){ return Math.max(1, 2-1.111*ratio); }
+  var x0=30,x1=270,y0=190,y1=40;
+  function pt(ratio){ var t=tr(ratio); return [x0+ratio*(x1-x0), y0-((t-1)/1)*(y0-y1)]; }
+  function draw(){
+    var ratio=parseInt(s.value,10)/100; val.textContent=ratio.toFixed(2);
+    var t=tr(ratio), outT=500*t;
+    svg.innerHTML='';
+    svg.appendChild(ns('line',{x1:x0,y1:y0,x2:x1,y2:y0,stroke:'#c3c9ce','stroke-width':2}));
+    svg.appendChild(ns('line',{x1:x0,y1:y0,x2:x0,y2:y1,stroke:'#c3c9ce','stroke-width':2}));
+    var d='M', pts=[];
+    for(var i=0;i<=20;i++){ var p=pt(i/20); pts.push(p[0].toFixed(1)+','+p[1].toFixed(1)); }
+    svg.appendChild(ns('path',{d:'M'+pts.join(' L'), fill:'none', stroke:'#2454c7','stroke-width':2.5}));
+    var cur=pt(ratio);
+    svg.appendChild(ns('circle',{cx:cur[0],cy:cur[1],r:6,fill:'#c1541d'}));
+    var lbl1=ns('text',{x:x0-6,y:y1-4,'text-anchor':'start','font-family':'IBM Plex Mono, monospace','font-size':'9',fill:'#8a92a0'}); lbl1.textContent='2.0×'; svg.appendChild(lbl1);
+    var lbl2=ns('text',{x:x0-6,y:y0+4,'text-anchor':'start','font-family':'IBM Plex Mono, monospace','font-size':'9',fill:'#8a92a0'}); lbl2.textContent='1.0×'; svg.appendChild(lbl2);
+    var cells=[['SPEED RATIO',ratio.toFixed(2)],['TORQUE MULTIPLIER',t.toFixed(2)+'×'],['OUTPUT TORQUE',outT.toFixed(0)+' N·m']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  s.addEventListener('input',draw);
+  draw();
+})();
+</script>"""
+
+FINALDRIVE_SIM_HTML = """
+<p>Set the final-drive ratio and toggle cornering to see the differential let the outer wheel spin faster than the inner one.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="fdSvg" viewBox="0 0 300 200" width="100%" height="100%" role="img" aria-label="A final drive reducing speed into torque, feeding a differential and two wheels"></svg></div>
+  <div class="sim-row"><span>FINAL DRIVE RATIO</span><span class="mono" id="fdRatioVal">10 : 1</span></div>
+  <input id="fdRatioSlider" type="range" min="4" max="40" step="1" value="10">
+  <div class="sim-btn-row">
+    <button type="button" class="sim-btn active" data-mode="straight">Straight</button>
+    <button type="button" class="sim-btn" data-mode="corner">Cornering</button>
+  </div>
+  <div class="sim-readout" id="fdReadout"></div>
+  <p class="sim-note">Input fixed at 1,000 RPM / 200 N·m from the transmission.</p>
+</div>"""
+
+FINALDRIVE_SIM_JS = """
+<script>
+(function(){
+  var s=document.getElementById('fdRatioSlider'), val=document.getElementById('fdRatioVal');
+  var svg=document.getElementById('fdSvg'), readout=document.getElementById('fdReadout');
+  var btns=document.querySelectorAll('.sim-btn[data-mode]');
+  if(!s||!svg) return;
+  var mode='straight';
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var style=document.createElement('style');
+  style.textContent='@keyframes fdspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdSvg g{animation:none!important;}}';
+  document.head.appendChild(style);
+  function draw(){
+    var ratio=parseInt(s.value,10); val.textContent=ratio+' : 1';
+    var avgRpm=1000/ratio, outTorque=200*ratio;
+    var leftRpm= mode==='corner' ? avgRpm*0.85 : avgRpm;
+    var rightRpm= mode==='corner' ? avgRpm*1.15 : avgRpm;
+    svg.innerHTML='';
+    svg.appendChild(ns('circle',{cx:80,cy:60,r:16,fill:'#e8edfb',stroke:'#2454c7','stroke-width':1.5}));
+    svg.appendChild(ns('circle',{cx:130,cy:60,r:34,fill:'#f7e8df',stroke:'#c1541d','stroke-width':1.5}));
+    svg.appendChild(ns('rect',{x:112,y:100,width:36,height:26,fill:'#5b6672'}));
+    svg.appendChild(ns('line',{x1:130,y1:126,x2:70,y2:170,stroke:'#151a1f','stroke-width':4}));
+    svg.appendChild(ns('line',{x1:130,y1:126,x2:190,y2:170,stroke:'#151a1f','stroke-width':4}));
+    var wl=ns('g',{style:'transform-origin:70px 170px; animation:fdspin '+(60/Math.max(1,leftRpm*0.3)).toFixed(1)+'s linear infinite;'});
+    wl.appendChild(ns('circle',{cx:70,cy:170,r:22,fill:'none',stroke:'#151a1f','stroke-width':4}));
+    wl.appendChild(ns('line',{x1:70,y1:148,x2:70,y2:192,stroke:'#151a1f','stroke-width':2}));
+    svg.appendChild(wl);
+    var wr=ns('g',{style:'transform-origin:190px 170px; animation:fdspin '+(60/Math.max(1,rightRpm*0.3)).toFixed(1)+'s linear infinite;'});
+    wr.appendChild(ns('circle',{cx:190,cy:170,r:22,fill:'none',stroke:'#151a1f','stroke-width':4}));
+    wr.appendChild(ns('line',{x1:190,y1:148,x2:190,y2:192,stroke:'#151a1f','stroke-width':2}));
+    svg.appendChild(wr);
+    var cells=[['RATIO',ratio+' : 1'],['OUTPUT TORQUE',outTorque+' N·m'],['LEFT WHEEL',leftRpm.toFixed(0)+' RPM'],['RIGHT WHEEL',rightRpm.toFixed(0)+' RPM']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  s.addEventListener('input',draw);
+  btns.forEach(function(b){ b.addEventListener('click',function(){ btns.forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); mode=b.getAttribute('data-mode'); draw(); }); });
+  draw();
+})();
+</script>"""
+
+BEARING_SIM_HTML = """
+<p>A radial ball bearing under load — the balls carry the load through the contact zone as the cage rotates continuously.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="brgSvg" viewBox="0 0 260 260" width="100%" height="100%" role="img" aria-label="A rotating ball bearing cutaway under a radial load"></svg></div>
+  <div class="sim-row"><span>RADIAL LOAD</span><span class="mono" id="brgLoadVal">20 kN</span></div>
+  <input id="brgLoadSlider" type="range" min="1" max="100" step="1" value="20">
+  <div class="sim-readout" id="brgReadout"></div>
+  <p class="sim-note">Eight balls share the load; the contact-zone highlight is illustrative, not to stress scale.</p>
+</div>"""
+
+BEARING_SIM_JS = """
+<script>
+(function(){
+  var s=document.getElementById('brgLoadSlider'), val=document.getElementById('brgLoadVal');
+  var svg=document.getElementById('brgSvg'), readout=document.getElementById('brgReadout');
+  if(!s||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var cx=130,cy=130,rOut=95,rIn=50,rBall=72;
+  var style=document.createElement('style');
+  style.textContent='@keyframes brgspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#brgCage{animation:none!important;}}';
+  document.head.appendChild(style);
+  function draw(){
+    var load=parseInt(s.value,10); val.textContent=load+' kN';
+    var perBall=load/8;
+    var level = load<30?'LOW':(load<70?'MODERATE':'HIGH');
+    var color = load<30?'#2f7d4f':(load<70?'#c1541d':'#a0261a');
+    svg.innerHTML='';
+    svg.appendChild(ns('circle',{cx:cx,cy:cy,r:rOut,fill:'none',stroke:'#151a1f','stroke-width':4}));
+    svg.appendChild(ns('circle',{cx:cx,cy:cy,r:rIn,fill:'none',stroke:'#151a1f','stroke-width':4}));
+    var arcW=10+load*0.4;
+    svg.appendChild(ns('path',{d:'M '+(cx-arcW)+' '+(cy-rBall-4)+' A '+(rBall+4)+' '+(rBall+4)+' 0 0 1 '+(cx+arcW)+' '+(cy-rBall-4), fill:'none', stroke:color,'stroke-width':10,'stroke-linecap':'round'}));
+    var cage=ns('g',{id:'brgCage',style:'transform-origin:'+cx+'px '+cy+'px; animation:brgspin 6s linear infinite;'});
+    for(var i=0;i<8;i++){
+      var ang=(i/8)*Math.PI*2, bx=cx+Math.cos(ang)*rBall, by=cy+Math.sin(ang)*rBall;
+      cage.appendChild(ns('circle',{cx:bx,cy:by,r:10,fill:'#e8edfb',stroke:'#2454c7','stroke-width':1.5}));
+    }
+    svg.appendChild(cage);
+    var arrow=ns('line',{x1:cx,y1:cy-rOut-30,x2:cx,y2:cy-rOut-6,stroke:color,'stroke-width':Math.max(2,load*0.08)});
+    svg.appendChild(arrow);
+    svg.appendChild(ns('polygon',{points:(cx-6)+','+(cy-rOut-14)+' '+(cx+6)+','+(cy-rOut-14)+' '+cx+','+(cy-rOut-2), fill:color}));
+    var cells=[['RADIAL LOAD',load+' kN'],['LOAD PER BALL',perBall.toFixed(1)+' kN'],['CONTACT LEVEL',level]];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  s.addEventListener('input',draw);
+  draw();
+})();
+</script>"""
+
+INTERACTIVE_HTML = {
+    "gear-ratio": GEAR_SIM_HTML, "hydraulic-force": HYDRAULIC_SIM_HTML,
+    "lever-torque": TORQUE_SIM_HTML, "lever-ma": MA_SIM_HTML, "planetary": PLANETARY_SIM_HTML,
+    "cylinder-flow": CYLINDER_SIM_HTML, "four-stroke": FOURSTROKE_SIM_HTML,
+    "torque-converter": TCONV_SIM_HTML, "final-drive": FINALDRIVE_SIM_HTML, "bearing-cutaway": BEARING_SIM_HTML,
+}
+INTERACTIVE_JS = {
+    "gear-ratio": GEAR_SIM_JS, "hydraulic-force": HYDRAULIC_SIM_JS,
+    "lever-torque": TORQUE_SIM_JS, "lever-ma": MA_SIM_JS, "planetary": PLANETARY_SIM_JS,
+    "cylinder-flow": CYLINDER_SIM_JS, "four-stroke": FOURSTROKE_SIM_JS,
+    "torque-converter": TCONV_SIM_JS, "final-drive": FINALDRIVE_SIM_JS, "bearing-cutaway": BEARING_SIM_JS,
+}
+INTERACTIVE_TITLE = {
+    "gear-ratio": "Gear Pair Simulator", "hydraulic-force": "Hydraulic Force Multiplier",
+    "lever-torque": "Lever & Torque", "lever-ma": "Lever Mechanical Advantage", "planetary": "Planetary Gearbox Simulator",
+    "cylinder-flow": "Hydraulic Cylinder Stroke", "four-stroke": "Four-Stroke Cycle Animation",
+    "torque-converter": "Torque Converter Curve", "final-drive": "Final Drive & Differential", "bearing-cutaway": "Bearing Cutaway",
+}
+
 
 def build_graph():
     return {
@@ -1049,6 +1556,14 @@ def build_index(graph):
                 % (BASE, c["slug"], dom["label"], c["title"])
             )
 
+    interactive_cards = []
+    for c in CONCEPTS:
+        if c.get("interactive"):
+            interactive_cards.append(
+                '<a class="domain-card" href="%sconcepts/%s/"><span class="dc-domain">%s</span><span class="dc-title">%s</span></a>'
+                % (BASE, c["slug"], INTERACTIVE_TITLE[c["interactive"]], c["title"])
+            )
+
     jsonld = json.dumps({"@context": "https://schema.org", "@type": "WebSite", "name": "Heavy Machinery Encyclopedia", "url": SITE_URL + "/"})
     head = HEAD_TMPL.format(
         title="Understand Machines Through Engineering",
@@ -1066,6 +1581,7 @@ def build_index(graph):
     body.append('<section class="idx-section" id="quiz-promo"><div class="quiz-promo"><span class="chip">JUST FOR FUN</span><h2>What Kind of Heavy Machine Are You?</h2><p class="idx-dek">A ten-question personality quiz, matched against real specifications from the 20 machines on this site. <a href="%squiz/">Take the quiz →</a></p></div></section>' % BASE)
     body.append('<section class="idx-section" id="machines"><h2>Machines, by Category</h2><p class="idx-dek">Real, named equipment — not generic types — each one cross-linked to the engineering principles that make it work.</p><div class="cat-grid">%s</div></section>' % "".join(cat_cards))
     body.append('<section class="idx-section" id="concepts"><h2>Engineering Fundamentals</h2><p class="idx-dek">The physics and mathematics underneath every machine on this site, with the real machines that apply each one listed automatically on its page.</p><div class="domain-grid">%s</div></section>' % "".join(domain_cards))
+    body.append('<section class="idx-section" id="interactive"><h2>Interactive Diagrams</h2><p class="idx-dek">Every engineering concept here includes a live, code-generated diagram — sliders and toggles, not static illustrations.</p><div class="domain-grid">%s</div></section>' % "".join(interactive_cards))
     body.append('</main>')
     foot = FOOT_TMPL.format(base=BASE, pagedata="null")
     write("index.html", head + "\n".join(body) + foot)

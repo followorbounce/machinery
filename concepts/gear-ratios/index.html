@@ -33,19 +33,17 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>A gear ratio is the number of teeth on the driven gear divided by the number of teeth on the driving gear. It tells you, in one number, how a gear pair changes rotational speed and torque as power passes through it.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>Mesh a small gear (the pinion) into a large one, and the large gear turns slower but with proportionally more torque — the same mechanical-advantage trade-off as a lever, delivered through interlocking teeth instead of a rigid bar. Reverse the pair and you get the opposite trade: speed instead of torque. A final drive on a bulldozer might use a ratio as steep as 6:1 specifically because the tracks need overwhelming torque at walking speed, never high speed at low torque.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Gear ratio</div><div class="eq-b">GR = N₂ / N₁</div><div class="eq-n">N₁ = teeth on the driving gear, N₂ = teeth on the driven gear.</div></div><div class="eq-box"><div class="eq-l">Speed change</div><div class="eq-b">ω₂ = ω₁ / GR</div><div class="eq-n">Output speed falls by exactly the same factor the ratio raises torque — energy is conserved, not created.</div></div></section>
-
 <section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Gear Pair Simulator</h2>
 <p>Set the tooth count on the driving gear (A) and the driven gear (B) and watch the ratio, output speed, and torque multiplication update live.</p>
 <div class="sim-panel">
-  <div class="gear-viewport"><svg id="gearSvg" viewBox="0 0 300 300" width="100%" height="100%" role="img" aria-label="Two meshed gears rotating according to the chosen tooth counts"></svg></div>
+  <div class="viewport"><svg id="gearSvg" viewBox="0 0 300 300" width="100%" height="100%" role="img" aria-label="Two meshed gears rotating according to the chosen tooth counts"></svg></div>
   <div class="sim-row"><span>TEETH ON A (driving)</span><span class="mono" id="teethAVal">20</span></div>
   <input id="teethASlider" type="range" min="8" max="60" step="1" value="20">
   <div class="sim-row"><span>TEETH ON B (driven)</span><span class="mono" id="teethBVal">40</span></div>
   <input id="teethBSlider" type="range" min="8" max="60" step="1" value="40">
   <div class="sim-readout" id="gearReadout"></div>
   <p class="sim-note">Input speed fixed at 1,000 RPM on gear A.</p>
-</div>
-</section>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>Two meshed gears always spin in opposite directions — an odd number of gears in a train restores the original direction, an even number reverses it.</li><li>A gear ratio doesn't have to come from a single pair: a gearbox chains several ratios together, multiplying them, to cover a huge range from one small engine.</li><li>The teeth count, not the gear's physical size, is what sets the ratio — two gears of very different diameters but the same tooth pitch and count produce a 1:1 ratio.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>

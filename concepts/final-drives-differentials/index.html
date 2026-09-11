@@ -33,6 +33,19 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>The final drive is the last gear reduction in a driveline, sitting right at the wheel hub or track sprocket, where the very highest torque and lowest speed in the whole machine are required. The differential, usually just upstream of it, allows the two output shafts to spin at different speeds — essential the moment the machine turns a corner.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>An engine spins fast but with comparatively little torque; a final drive's job is to spend the last, steepest gear reduction of the whole driveline turning that speed into torque, right where the ground finally meets the machine. A differential solves a problem final drives alone can't: in a turn, an outside wheel or track must travel farther, and therefore faster, than the inside one, so the differential splits incoming torque between two output shafts while letting them rotate independently — normally, at the cost of always sending more torque to whichever wheel spins easiest, which is why heavy machines add lockable or limited-slip differentials for low-traction ground.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Overall drive ratio</div><div class="eq-b">GR_total = GR_transmission × GR_final drive</div><div class="eq-n">The final drive typically supplies the single largest reduction of the two — often steeper than every transmission gear combined.</div></div></section>
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Final Drive & Differential</h2>
+<p>Set the final-drive ratio and toggle cornering to see the differential let the outer wheel spin faster than the inner one.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="fdSvg" viewBox="0 0 300 200" width="100%" height="100%" role="img" aria-label="A final drive reducing speed into torque, feeding a differential and two wheels"></svg></div>
+  <div class="sim-row"><span>FINAL DRIVE RATIO</span><span class="mono" id="fdRatioVal">10 : 1</span></div>
+  <input id="fdRatioSlider" type="range" min="4" max="40" step="1" value="10">
+  <div class="sim-btn-row">
+    <button type="button" class="sim-btn active" data-mode="straight">Straight</button>
+    <button type="button" class="sim-btn" data-mode="corner">Cornering</button>
+  </div>
+  <div class="sim-readout" id="fdReadout"></div>
+  <p class="sim-note">Input fixed at 1,000 RPM / 200 N·m from the transmission.</p>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>A locked differential sends equal torque to both sides regardless of traction — essential in mud or on a slope, but it fights the machine on a hard-surfaced turn and is disengaged as soon as traction allows.</li><li>Tracked machines like bulldozers and excavators don't use a differential in the wheeled sense at all — each track has its own final drive, and steering comes from slowing or reversing one side.</li><li>A final drive failure is one of the most expensive repairs on a mining haul truck, because the whole reduction gearset sits sealed inside the wheel hub, submerged in gear oil, exactly where dirt and heat both concentrate.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
@@ -43,5 +56,44 @@
 </div></footer>
 <script type="application/json" id="page-data">{"type": "concept", "slug": "final-drives-differentials", "domain": "power-transmission", "relatedConcepts": ["gear-ratios", "torque"]}</script>
 <script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var s=document.getElementById('fdRatioSlider'), val=document.getElementById('fdRatioVal');
+  var svg=document.getElementById('fdSvg'), readout=document.getElementById('fdReadout');
+  var btns=document.querySelectorAll('.sim-btn[data-mode]');
+  if(!s||!svg) return;
+  var mode='straight';
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var style=document.createElement('style');
+  style.textContent='@keyframes fdspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#fdSvg g{animation:none!important;}}';
+  document.head.appendChild(style);
+  function draw(){
+    var ratio=parseInt(s.value,10); val.textContent=ratio+' : 1';
+    var avgRpm=1000/ratio, outTorque=200*ratio;
+    var leftRpm= mode==='corner' ? avgRpm*0.85 : avgRpm;
+    var rightRpm= mode==='corner' ? avgRpm*1.15 : avgRpm;
+    svg.innerHTML='';
+    svg.appendChild(ns('circle',{cx:80,cy:60,r:16,fill:'#e8edfb',stroke:'#2454c7','stroke-width':1.5}));
+    svg.appendChild(ns('circle',{cx:130,cy:60,r:34,fill:'#f7e8df',stroke:'#c1541d','stroke-width':1.5}));
+    svg.appendChild(ns('rect',{x:112,y:100,width:36,height:26,fill:'#5b6672'}));
+    svg.appendChild(ns('line',{x1:130,y1:126,x2:70,y2:170,stroke:'#151a1f','stroke-width':4}));
+    svg.appendChild(ns('line',{x1:130,y1:126,x2:190,y2:170,stroke:'#151a1f','stroke-width':4}));
+    var wl=ns('g',{style:'transform-origin:70px 170px; animation:fdspin '+(60/Math.max(1,leftRpm*0.3)).toFixed(1)+'s linear infinite;'});
+    wl.appendChild(ns('circle',{cx:70,cy:170,r:22,fill:'none',stroke:'#151a1f','stroke-width':4}));
+    wl.appendChild(ns('line',{x1:70,y1:148,x2:70,y2:192,stroke:'#151a1f','stroke-width':2}));
+    svg.appendChild(wl);
+    var wr=ns('g',{style:'transform-origin:190px 170px; animation:fdspin '+(60/Math.max(1,rightRpm*0.3)).toFixed(1)+'s linear infinite;'});
+    wr.appendChild(ns('circle',{cx:190,cy:170,r:22,fill:'none',stroke:'#151a1f','stroke-width':4}));
+    wr.appendChild(ns('line',{x1:190,y1:148,x2:190,y2:192,stroke:'#151a1f','stroke-width':2}));
+    svg.appendChild(wr);
+    var cells=[['RATIO',ratio+' : 1'],['OUTPUT TORQUE',outTorque+' N·m'],['LEFT WHEEL',leftRpm.toFixed(0)+' RPM'],['RIGHT WHEEL',rightRpm.toFixed(0)+' RPM']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  s.addEventListener('input',draw);
+  btns.forEach(function(b){ b.addEventListener('click',function(){ btns.forEach(function(x){x.classList.remove('active');}); b.classList.add('active'); mode=b.getAttribute('data-mode'); draw(); }); });
+  draw();
+})();
+</script>
 </body>
 </html>

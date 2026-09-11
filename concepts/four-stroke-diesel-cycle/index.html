@@ -33,6 +33,16 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>The four-stroke diesel cycle is the sequence of intake, compression, power, and exhaust that a diesel engine's piston repeats to convert fuel into rotating torque. Unlike a petrol engine, it ignites fuel using heat from compression alone, with no spark plug.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>On the intake stroke the piston draws in only air. On compression, that air is squeezed hard enough — often 14 to 22 times smaller — that its temperature alone exceeds diesel fuel's ignition point. Fuel is injected right at that moment and ignites immediately on contact with the superheated air, driving the piston down on the power stroke; the exhaust stroke then clears the cylinder for the next cycle. Every crankshaft revolution moves the piston through two strokes, so a four-stroke engine fires each cylinder once every two revolutions.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Compression ratio</div><div class="eq-b">CR = (Vd + Vc) / Vc</div><div class="eq-n">Vd = swept (displacement) volume, Vc = clearance volume remaining at top dead centre. Higher CR means hotter compressed air and easier diesel ignition.</div></div></section>
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Four-Stroke Cycle Animation</h2>
+<p>Press play to step through one full four-stroke cycle — intake, compression, power, exhaust — two crankshaft revolutions per cycle.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="fsSvg" viewBox="0 0 200 260" width="100%" height="100%" role="img" aria-label="A piston moving through the four-stroke diesel cycle"></svg></div>
+  <div class="sim-btn-row"><button type="button" class="sim-btn" id="fsPlayBtn">▶ Play</button></div>
+  <div class="sim-row"><span>CYCLE SPEED</span><span class="mono" id="fsSpeedVal">3×</span></div>
+  <input id="fsSpeedSlider" type="range" min="1" max="8" step="1" value="3">
+  <div class="sim-readout" id="fsReadout"></div>
+  <p class="sim-note">Piston motion is simplified for clarity, not exact crank geometry.</p>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>Because diesel ignition needs no spark, diesel engines can run at far higher compression than petrol engines — one reason they extract more work from the same fuel energy.</li><li>Turbocharging (see Chapter link below) exists largely to fix diesel's one weakness at altitude and low RPM: not enough air packed into the cylinder to burn the fuel completely.</li><li>The largest mining haul trucks run two of these engines' industrial cousins side by side, purely because no single diesel yet built is compact enough to deliver the combined output alone.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
@@ -43,5 +53,53 @@
 </div></footer>
 <script type="application/json" id="page-data">{"type": "concept", "slug": "four-stroke-diesel-cycle", "domain": "engines", "relatedConcepts": ["torque", "torque-converters"]}</script>
 <script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var svg=document.getElementById('fsSvg'), playBtn=document.getElementById('fsPlayBtn');
+  var speed=document.getElementById('fsSpeedSlider'), speedVal=document.getElementById('fsSpeedVal'), readout=document.getElementById('fsReadout');
+  if(!svg||!playBtn) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var angle=0, running=false, lastT=null;
+  var stages=['INTAKE','COMPRESSION','POWER','EXHAUST'];
+  var colors=['#2454c7','#5b6672','#c1541d','#8a92a0'];
+  function draw(){
+    var stageIdx=Math.floor((angle%720)/180);
+    var pistonY=60+ (1-Math.cos(angle*Math.PI/180))*40;
+    svg.innerHTML='';
+    svg.appendChild(ns('rect',{x:60,y:20,width:80,height:160,fill:'none',stroke:'#151a1f','stroke-width':2}));
+    var intakeOpen=stageIdx===0, exhaustOpen=stageIdx===3;
+    svg.appendChild(ns('rect',{x:66,y:14,width:20,height:10,fill:intakeOpen?'#2454c7':'#c3c9ce'}));
+    svg.appendChild(ns('rect',{x:114,y:14,width:20,height:10,fill:exhaustOpen?'#c1541d':'#c3c9ce'}));
+    if(stageIdx===2 && (angle%720)<380){
+      svg.appendChild(ns('circle',{cx:100,cy:30,r:5,fill:'#c1541d'}));
+    }
+    svg.appendChild(ns('rect',{x:65,y:pistonY,width:70,height:28,fill:colors[stageIdx]}));
+    svg.appendChild(ns('line',{x1:100,y1:pistonY+28,x2:100,y2:220,stroke:'#151a1f','stroke-width':4}));
+    svg.appendChild(ns('circle',{cx:100,cy:220,r:22,fill:'none',stroke:'#151a1f','stroke-width':3}));
+    var crankX=100+22*Math.cos(angle*Math.PI/180), crankY=220+22*Math.sin(angle*Math.PI/180);
+    svg.appendChild(ns('circle',{cx:crankX,cy:crankY,r:5,fill:'#151a1f'}));
+    var lbl=ns('text',{x:100,y:250,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'13','font-weight':'700',fill:colors[stageIdx]}); lbl.textContent=stages[stageIdx]; svg.appendChild(lbl);
+    if(readout) readout.innerHTML='<div class="cell"><span class="l">STAGE</span><span class="v">'+stages[stageIdx]+'</span></div><div class="cell"><span class="l">CRANK ANGLE</span><span class="v">'+Math.round(angle%720)+'°</span></div>';
+  }
+  function frame(t){
+    if(!running) return;
+    if(lastT!=null){
+      var dt=(t-lastT)/1000;
+      angle=(angle+dt*parseFloat(speed.value)*90)%720;
+    }
+    lastT=t;
+    draw();
+    requestAnimationFrame(frame);
+  }
+  playBtn.addEventListener('click',function(){
+    running=!running;
+    playBtn.textContent=running?'⏸ Pause':'▶ Play';
+    if(running){ lastT=null; requestAnimationFrame(frame); }
+  });
+  speed.addEventListener('input',function(){ speedVal.textContent=speed.value+'×'; });
+  draw();
+})();
+</script>
 </body>
 </html>

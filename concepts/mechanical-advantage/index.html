@@ -33,6 +33,15 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>Mechanical advantage is the factor by which a machine multiplies an input force. A machine with a mechanical advantage of 20 turns 50 kg of push into 1,000 kg of usable force — at the cost of the input having to move 20 times farther or faster than the output.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>No machine creates energy; mechanical advantage only trades force against distance so that work in equals work out. A dragline's rigging, a forklift's hydraulic ram, and a bulldozer's final drive are all, underneath the steel, the same three-thousand-year-old idea as a crowbar under a rock — just reapplied through wire rope, oil pressure, or gear teeth instead of a wooden pole.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Mechanical advantage</div><div class="eq-b">MA = Fout / Fin</div><div class="eq-n">A hydraulic ram with 10:1 area ratio and a gear train with a 10:1 ratio give the identical multiplication — the physics doesn't care which mechanism delivers it.</div></div></section>
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Lever Mechanical Advantage</h2>
+<p>Slide the fulcrum position between a fixed effort and a fixed 500&nbsp;kg load to see how mechanical advantage — and the effort actually needed — changes.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="maSvg" viewBox="0 0 300 200" width="100%" height="100%" role="img" aria-label="A lever balancing an effort force against a fixed load, with a movable fulcrum"></svg></div>
+  <div class="sim-row"><span>FULCRUM POSITION (from effort side)</span><span class="mono" id="maFulcrumVal">30%</span></div>
+  <input id="maFulcrumSlider" type="range" min="10" max="90" step="1" value="30">
+  <div class="sim-readout" id="maReadout"></div>
+  <p class="sim-note">Load fixed at 500 kg. Moving the fulcrum toward the load shortens the load arm and raises mechanical advantage.</p>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>Archimedes is credited with the (probably apocryphal) claim that with a long enough lever and a place to stand, he could move the Earth — dimensionally, he wasn't wrong, only practically.</li><li>A block-and-tackle pulley system used on cranes multiplies force by the number of rope segments supporting the load — count the strands to know the mechanical advantage.</li><li>Every one of the twenty machines on this site owes at least one of its major systems to mechanical advantage: it is the most-cited concept in the whole encyclopedia.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
@@ -43,5 +52,35 @@
 </div></footer>
 <script type="application/json" id="page-data">{"type": "concept", "slug": "mechanical-advantage", "domain": "mechanics", "relatedConcepts": ["torque", "hydraulic-cylinders"]}</script>
 <script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var s=document.getElementById('maFulcrumSlider'), val=document.getElementById('maFulcrumVal');
+  var svg=document.getElementById('maSvg'), readout=document.getElementById('maReadout');
+  if(!s||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var load=500, x0=30, x1=270, beamRealM=2.0, y=130;
+  function draw(){
+    var pct=parseInt(s.value,10); val.textContent=pct+'%';
+    var fx=x0+(x1-x0)*(pct/100);
+    var effortPx=fx-x0, loadPx=x1-fx;
+    var mPerPx=beamRealM/(x1-x0);
+    var effortArm=effortPx*mPerPx, loadArm=loadPx*mPerPx;
+    var ma=effortArm/loadArm, effortNeeded=load/ma;
+    svg.innerHTML='';
+    svg.appendChild(ns('line',{x1:x0,y1:y,x2:x1,y2:y, stroke:'#2454c7','stroke-width':6,'stroke-linecap':'round'}));
+    svg.appendChild(ns('polygon',{points:(fx-12)+','+(y+22)+' '+(fx+12)+','+(y+22)+' '+fx+','+y, fill:'#151a1f'}));
+    svg.appendChild(ns('circle',{cx:x0,cy:y-24,r:12,fill:'none',stroke:'#c1541d','stroke-width':3}));
+    svg.appendChild(ns('line',{x1:x0,y1:y-12,x2:x0,y2:y, stroke:'#c1541d','stroke-width':3}));
+    svg.appendChild(ns('rect',{x:x1-16,y:y-34,width:32,height:32,fill:'#5b6672'}));
+    var t1=ns('text',{x:x0,y:y-46,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'10',fill:'#c1541d'}); t1.textContent='EFFORT'; svg.appendChild(t1);
+    var t2=ns('text',{x:x1,y:y-42,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'10',fill:'#5b6672'}); t2.textContent='LOAD'; svg.appendChild(t2);
+    var cells=[['EFFORT ARM',effortArm.toFixed(2)+' m'],['LOAD ARM',loadArm.toFixed(2)+' m'],['MECHANICAL ADVANTAGE',ma.toFixed(2)+' : 1'],['EFFORT NEEDED',effortNeeded.toFixed(0)+' kg']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  s.addEventListener('input',draw);
+  draw();
+})();
+</script>
 </body>
 </html>

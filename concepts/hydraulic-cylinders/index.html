@@ -33,6 +33,17 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>A hydraulic cylinder is a tube, a piston, and a rod that turns fluid pressure directly into a straight-line push or pull. It is the most common actuator on any heavy machine built after about 1950, because it can deliver enormous force from a compact, sealed package with no gears at all.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>Pump oil into one side of the piston and it pushes the rod out; pump oil into the other side and it pulls the rod back in — the direction is controlled entirely by a valve, not by the cylinder itself. Because force scales with piston area (Pascal's Law), a boom cylinder only a few hundred millimetres across can lift many tonnes at the far end of an excavator's arm, at working pressures that would be lethal if the seals ever failed.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Cylinder force</div><div class="eq-b">F = P × A = P × π(d/2)²</div><div class="eq-n">d = the piston's bore diameter. Doubling the bore quadruples the force from the same pressure.</div></div></section>
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Hydraulic Cylinder Stroke</h2>
+<p>Set the cylinder's bore and the pump's flow rate at a fixed 250 bar working pressure to see the force it pushes with, and how fast the rod extends.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="cylSvg" viewBox="0 0 300 180" width="100%" height="100%" role="img" aria-label="A hydraulic cylinder extending, driven by pressurised flow"></svg></div>
+  <div class="sim-row"><span>BORE DIAMETER</span><span class="mono" id="cylBoreVal">100 mm</span></div>
+  <input id="cylBoreSlider" type="range" min="50" max="300" step="5" value="100">
+  <div class="sim-row"><span>PUMP FLOW RATE</span><span class="mono" id="cylFlowVal">80 L/min</span></div>
+  <input id="cylFlowSlider" type="range" min="10" max="400" step="5" value="80">
+  <div class="sim-readout" id="cylReadout"></div>
+  <p class="sim-note">Working pressure fixed at 250 bar. Animation speed is illustrative, not real-time.</p>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>A double-acting cylinder — pressurised on both sides in turn — can push and pull with force; a single-acting cylinder can only push, and relies on gravity or a spring to retract.</li><li>The 'stick' cylinder on a large excavator can be over a metre in bore diameter, built more like a piece of pressure-vessel engineering than a typical mechanical part.</li><li>Cylinder seals, not the steel tube, are usually the first thing to wear out on a hydraulic machine — a scored rod as thin as a human hair can leak enough to stall a boom mid-lift.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
@@ -43,5 +54,39 @@
 </div></footer>
 <script type="application/json" id="page-data">{"type": "concept", "slug": "hydraulic-cylinders", "domain": "hydraulics", "relatedConcepts": ["pascals-law", "mechanical-advantage"]}</script>
 <script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var bore=document.getElementById('cylBoreSlider'), flow=document.getElementById('cylFlowSlider');
+  var boreVal=document.getElementById('cylBoreVal'), flowVal=document.getElementById('cylFlowVal');
+  var svg=document.getElementById('cylSvg'), readout=document.getElementById('cylReadout');
+  if(!bore||!flow||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var P=25000000, strokePx=120, rodEl=null;
+  var style=document.createElement('style');
+  document.head.appendChild(style);
+  function draw(){
+    var d=parseFloat(bore.value), q=parseFloat(flow.value);
+    boreVal.textContent=d+' mm'; flowVal.textContent=q+' L/min';
+    var A=Math.PI*Math.pow(d/2000,2);
+    var F=P*A, tonnes=F/9810, kN=F/1000;
+    var flowM3s=(q/1000)/60, v=flowM3s/A;
+    var periodS=Math.max(0.5,Math.min(4,4/(0.2+v)));
+    style.textContent='@keyframes cylext{0%{transform:translateX(0)}50%{transform:translateX('+strokePx+'px)}100%{transform:translateX(0)}}@media (prefers-reduced-motion:reduce){#cylRod{animation:none!important;}}';
+    var bodyH=20+d*0.3;
+    svg.innerHTML='';
+    svg.appendChild(ns('rect',{x:20,y:90-bodyH/2,width:70,height:bodyH,fill:'none',stroke:'#151a1f','stroke-width':2}));
+    var rodGroup=ns('g',{id:'cylRod',style:'animation:cylext '+periodS.toFixed(2)+'s ease-in-out infinite;'});
+    rodGroup.appendChild(ns('rect',{x:82,y:90-6,width:180,height:12,fill:'#2454c7'}));
+    rodGroup.appendChild(ns('rect',{x:250,y:90-18,width:14,height:36,fill:'#151a1f'}));
+    svg.appendChild(rodGroup);
+    var lbl=ns('text',{x:55,y:90+bodyH/2+18,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'10',fill:'#5b6672'}); lbl.textContent='BORE '+d+' mm'; svg.appendChild(lbl);
+    var cells=[['BORE',d+' mm'],['FLOW',q+' L/min'],['FORCE',kN.toFixed(0)+' kN ('+tonnes.toFixed(1)+' t)'],['ROD SPEED',(v*1000).toFixed(0)+' mm/s']];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  bore.addEventListener('input',draw); flow.addEventListener('input',draw);
+  draw();
+})();
+</script>
 </body>
 </html>

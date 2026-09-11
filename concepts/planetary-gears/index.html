@@ -33,6 +33,18 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>A planetary (epicyclic) gearset arranges a central sun gear, several orbiting planet gears on a carrier, and an outer ring gear with internal teeth, all meshed together and sharing one axis. Fixing any one of the three members and driving another produces a different gear ratio from the same set of parts.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>Because load is shared across three or more planet gears instead of a single meshing pair, a planetary set transmits far more torque for its size and weight than an equivalent simple gear train — which is exactly why it lives inside the tight final-drive housing at a bulldozer's track sprocket, or inside a tunnel boring machine's cutterhead drive, where space is the scarcest resource on the machine.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Ratio, ring fixed</div><div class="eq-b">GR = 1 + (N_ring / N_sun)</div><div class="eq-n">Driving the sun gear with the ring gear held stationary is the most common configuration in heavy-equipment final drives.</div></div></section>
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Planetary Gearbox Simulator</h2>
+<p>Choose which member is held fixed and watch the other two rotate at the resulting speed — the same three gears, three different outcomes.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="planetSvg" viewBox="0 0 300 300" width="100%" height="100%" role="img" aria-label="A planetary gearset: sun, planets, and ring, with one member held fixed"></svg></div>
+  <div class="sim-btn-row">
+    <button type="button" class="sim-btn active" data-mode="ring">Ring Fixed</button>
+    <button type="button" class="sim-btn" data-mode="carrier">Carrier Fixed</button>
+    <button type="button" class="sim-btn" data-mode="sun">Sun Fixed</button>
+  </div>
+  <div class="sim-readout" id="planetReadout"></div>
+  <p class="sim-note">Sun = 24 teeth, ring = 72 teeth throughout — only which member is held changes the outcome.</p>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>The same physical planetary gearset can produce several different ratios just by changing which member is held stationary — this is exactly how a planetary automatic transmission shifts gears without a clutch pedal.</li><li>Because the planet gears orbit the sun gear the same way moons orbit a planet, the arrangement borrowed its name directly from astronomy.</li><li>A single-stage planetary set can realistically achieve ratios up to about 10:1; stacking two or three stages in series reaches into the hundreds, which is exactly what a large final drive needs.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
@@ -43,5 +55,58 @@
 </div></footer>
 <script type="application/json" id="page-data">{"type": "concept", "slug": "planetary-gears", "domain": "gears", "relatedConcepts": ["gear-ratios", "final-drives-differentials"]}</script>
 <script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var svg=document.getElementById('planetSvg'), readout=document.getElementById('planetReadout');
+  var btns=document.querySelectorAll('.sim-btn[data-mode]');
+  if(!svg||!btns.length) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var Nsun=24, Nring=72, cx=150, cy=150, mode='ring';
+  var style=document.createElement('style');
+  style.textContent='@keyframes pspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@keyframes pspin-rev{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}@media (prefers-reduced-motion:reduce){#planetSvg g{animation:none!important;}}';
+  document.head.appendChild(style);
+  function outcome(){
+    if(mode==='ring') return {sun:1000, carrier:1000/(1+Nring/Nsun), ring:0, fixed:'RING', out:'CARRIER', ratio:1/(1+Nring/Nsun)};
+    if(mode==='carrier') return {sun:1000, carrier:0, ring:-1000*(Nsun/Nring), fixed:'CARRIER', out:'RING', ratio:-(Nsun/Nring)};
+    return {sun:0, carrier:1000, ring:1000*((Nring+Nsun)/Nring), fixed:'SUN', out:'RING', ratio:(Nring+Nsun)/Nring};
+  }
+  function spinStyle(rpm){
+    if(Math.abs(rpm)<1) return 'animation:none;';
+    var dur=(60/Math.abs(rpm*0.15)).toFixed(1);
+    return 'transform-origin:'+cx+'px '+cy+'px; animation:'+(rpm>0?'pspin':'pspin-rev')+' '+dur+'s linear infinite;';
+  }
+  function draw(){
+    var o=outcome();
+    svg.innerHTML='';
+    var ring=ns('g',{style:spinStyle(o.ring)});
+    ring.appendChild(ns('circle',{cx:cx,cy:cy,r:110,fill:'none',stroke:'#c1541d','stroke-width':6}));
+    ring.appendChild(ns('line',{x1:cx,y1:cy-110,x2:cx,y2:cy-98,stroke:'#c1541d','stroke-width':4}));
+    svg.appendChild(ring);
+    var carrier=ns('g',{style:spinStyle(o.carrier)});
+    for(var i=0;i<3;i++){
+      var ang=(i/3)*Math.PI*2, px=cx+Math.cos(ang)*70, py=cy+Math.sin(ang)*70;
+      carrier.appendChild(ns('line',{x1:cx,y1:cy,x2:px,y2:py,stroke:'#8a92a0','stroke-width':2}));
+      carrier.appendChild(ns('circle',{cx:px,cy:py,r:16,fill:'#f7e8df',stroke:'#c1541d','stroke-width':1.5}));
+    }
+    svg.appendChild(carrier);
+    var sun=ns('g',{style:spinStyle(o.sun)});
+    sun.appendChild(ns('circle',{cx:cx,cy:cy,r:34,fill:'#e8edfb',stroke:'#2454c7','stroke-width':1.5}));
+    sun.appendChild(ns('line',{x1:cx,y1:cy,x2:cx,y2:cy-34,stroke:'#2454c7','stroke-width':3}));
+    svg.appendChild(sun);
+    var cells=[['FIXED MEMBER',o.fixed],['SUN RPM',o.sun.toFixed(0)],['CARRIER RPM',o.carrier.toFixed(0)],['RING RPM',o.ring.toFixed(0)]];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  btns.forEach(function(b){
+    b.addEventListener('click',function(){
+      btns.forEach(function(x){x.classList.remove('active');});
+      b.classList.add('active');
+      mode=b.getAttribute('data-mode');
+      draw();
+    });
+  });
+  draw();
+})();
+</script>
 </body>
 </html>

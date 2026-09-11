@@ -33,6 +33,15 @@
 <section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>A bearing is the part of a machine designed to take the friction, so nothing more expensive around it has to. It supports a rotating or sliding component while letting it move with as little resistance and wear as possible.</p></section>
 <section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>Two hard steel surfaces sliding directly against each other under load generate heat and wear at a rate no machine could survive in continuous service — a bearing interrupts that direct contact, either with a layer of rolling balls or rollers (rolling-element bearings) or with a thin, continuously replenished film of oil (plain/journal bearings) that keeps the two surfaces from ever quite touching. A slew bearing, the giant ring gear a whole excavator's upper structure rotates on, is really just this same idea scaled up to a component several metres across.</p></section>
 <section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Basic friction relation</div><div class="eq-b">F_friction = μ × N</div><div class="eq-n">μ = coefficient of friction, N = normal load. A good rolling-element bearing can cut effective μ by a factor of ten or more compared to unlubricated sliding contact.</div></div></section>
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Bearing Cutaway</h2>
+<p>A radial ball bearing under load — the balls carry the load through the contact zone as the cage rotates continuously.</p>
+<div class="sim-panel">
+  <div class="viewport"><svg id="brgSvg" viewBox="0 0 260 260" width="100%" height="100%" role="img" aria-label="A rotating ball bearing cutaway under a radial load"></svg></div>
+  <div class="sim-row"><span>RADIAL LOAD</span><span class="mono" id="brgLoadVal">20 kN</span></div>
+  <input id="brgLoadSlider" type="range" min="1" max="100" step="1" value="20">
+  <div class="sim-readout" id="brgReadout"></div>
+  <p class="sim-note">Eight balls share the load; the contact-zone highlight is illustrative, not to stress scale.</p>
+</div></section>
 <section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>The slew ring under a large excavator's cab can be several metres in diameter, carry the machine's entire upper weight, and still needs to rotate smoothly enough for fine bucket control.</li><li>Bearing contamination — a single grain of grit in the wrong place — is the single most common cause of premature bearing failure in heavy equipment, ahead of pure overload.</li><li>Fluid (journal) bearings, used in large engine crankshafts, never let metal touch metal at all in normal operation — they ride on a wedge of pressurised oil only a few hundredths of a millimetre thick.</li></ul></section>
 <section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
 <section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
@@ -43,5 +52,42 @@
 </div></footer>
 <script type="application/json" id="page-data">{"type": "concept", "slug": "bearings", "domain": "power-transmission", "relatedConcepts": ["torque", "final-drives-differentials"]}</script>
 <script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var s=document.getElementById('brgLoadSlider'), val=document.getElementById('brgLoadVal');
+  var svg=document.getElementById('brgSvg'), readout=document.getElementById('brgReadout');
+  if(!s||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  var cx=130,cy=130,rOut=95,rIn=50,rBall=72;
+  var style=document.createElement('style');
+  style.textContent='@keyframes brgspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#brgCage{animation:none!important;}}';
+  document.head.appendChild(style);
+  function draw(){
+    var load=parseInt(s.value,10); val.textContent=load+' kN';
+    var perBall=load/8;
+    var level = load<30?'LOW':(load<70?'MODERATE':'HIGH');
+    var color = load<30?'#2f7d4f':(load<70?'#c1541d':'#a0261a');
+    svg.innerHTML='';
+    svg.appendChild(ns('circle',{cx:cx,cy:cy,r:rOut,fill:'none',stroke:'#151a1f','stroke-width':4}));
+    svg.appendChild(ns('circle',{cx:cx,cy:cy,r:rIn,fill:'none',stroke:'#151a1f','stroke-width':4}));
+    var arcW=10+load*0.4;
+    svg.appendChild(ns('path',{d:'M '+(cx-arcW)+' '+(cy-rBall-4)+' A '+(rBall+4)+' '+(rBall+4)+' 0 0 1 '+(cx+arcW)+' '+(cy-rBall-4), fill:'none', stroke:color,'stroke-width':10,'stroke-linecap':'round'}));
+    var cage=ns('g',{id:'brgCage',style:'transform-origin:'+cx+'px '+cy+'px; animation:brgspin 6s linear infinite;'});
+    for(var i=0;i<8;i++){
+      var ang=(i/8)*Math.PI*2, bx=cx+Math.cos(ang)*rBall, by=cy+Math.sin(ang)*rBall;
+      cage.appendChild(ns('circle',{cx:bx,cy:by,r:10,fill:'#e8edfb',stroke:'#2454c7','stroke-width':1.5}));
+    }
+    svg.appendChild(cage);
+    var arrow=ns('line',{x1:cx,y1:cy-rOut-30,x2:cx,y2:cy-rOut-6,stroke:color,'stroke-width':Math.max(2,load*0.08)});
+    svg.appendChild(arrow);
+    svg.appendChild(ns('polygon',{points:(cx-6)+','+(cy-rOut-14)+' '+(cx+6)+','+(cy-rOut-14)+' '+cx+','+(cy-rOut-2), fill:color}));
+    var cells=[['RADIAL LOAD',load+' kN'],['LOAD PER BALL',perBall.toFixed(1)+' kN'],['CONTACT LEVEL',level]];
+    readout.innerHTML=cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  s.addEventListener('input',draw);
+  draw();
+})();
+</script>
 </body>
 </html>
