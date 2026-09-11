@@ -1,0 +1,390 @@
+{
+  "site": {
+    "title": "Heavy Machinery Encyclopedia",
+    "url": "https://followorbounce.github.io/machinery/"
+  },
+  "categories": [
+    {
+      "id": "construction-equipment",
+      "label": "Construction Equipment"
+    },
+    {
+      "id": "mining-equipment",
+      "label": "Mining Equipment"
+    },
+    {
+      "id": "underground-equipment",
+      "label": "Underground Equipment"
+    },
+    {
+      "id": "agricultural-machinery",
+      "label": "Agricultural Machinery"
+    },
+    {
+      "id": "forestry-machinery",
+      "label": "Forestry Machinery"
+    },
+    {
+      "id": "industrial-material-handling",
+      "label": "Industrial & Material Handling"
+    },
+    {
+      "id": "military-engineering-vehicles",
+      "label": "Military Engineering Vehicles"
+    },
+    {
+      "id": "special-purpose-machines",
+      "label": "Special Purpose Machines"
+    }
+  ],
+  "domains": [
+    {
+      "id": "mechanics",
+      "label": "Mechanics"
+    },
+    {
+      "id": "gears",
+      "label": "Gears"
+    },
+    {
+      "id": "hydraulics",
+      "label": "Hydraulics"
+    },
+    {
+      "id": "engines",
+      "label": "Engines"
+    },
+    {
+      "id": "clutches-transmissions",
+      "label": "Clutches & Transmissions"
+    },
+    {
+      "id": "power-transmission",
+      "label": "Power Transmission"
+    }
+  ],
+  "machines": [
+    {
+      "slug": "liebherr-r9800",
+      "title": "Liebherr R 9800",
+      "category": "mining-equipment",
+      "summary": "An 800-tonne hydraulic mining excavator built to load the very largest haul trucks in a handful of passes, and one of the two or three largest hydraulic excavators ever put into series production.",
+      "principles": [
+        "hydraulic-cylinders",
+        "pascals-law",
+        "torque"
+      ]
+    },
+    {
+      "slug": "caterpillar-d11",
+      "title": "Caterpillar D11",
+      "category": "construction-equipment",
+      "summary": "Caterpillar's largest production bulldozer, built to push more material per pass than any other dozer in its catalogue, almost exclusively in mining rather than general construction.",
+      "principles": [
+        "torque-converters",
+        "final-drives-differentials",
+        "mechanical-advantage"
+      ]
+    },
+    {
+      "slug": "caterpillar-994k",
+      "title": "Caterpillar 994K",
+      "category": "construction-equipment",
+      "summary": "Caterpillar's largest wheel loader, built to load haul trucks directly rather than push or carry material any real distance \u2014 a specialist at one job, done at enormous scale.",
+      "principles": [
+        "hydraulic-cylinders",
+        "torque-converters",
+        "mechanical-advantage"
+      ]
+    },
+    {
+      "slug": "caterpillar-24m",
+      "title": "Caterpillar 24 Motor Grader",
+      "category": "construction-equipment",
+      "summary": "The largest motor grader Caterpillar builds, sized specifically to maintain the wide haul roads inside a mine rather than the narrower roads a construction grader typically finishes.",
+      "principles": [
+        "gear-ratios",
+        "hydraulic-cylinders",
+        "bearings"
+      ]
+    },
+    {
+      "slug": "caterpillar-797f",
+      "title": "Caterpillar 797F",
+      "category": "mining-equipment",
+      "summary": "The largest mechanical-drive haul truck Caterpillar builds \u2014 a 400-ton-payload truck powered by a single, enormous diesel engine rather than the diesel-electric drivetrains some rivals use at this size.",
+      "principles": [
+        "torque",
+        "final-drives-differentials",
+        "four-stroke-diesel-cycle"
+      ]
+    },
+    {
+      "slug": "big-muskie-dragline",
+      "title": "Bucyrus-Erie 4250-W \u201cBig Muskie\u201d",
+      "category": "mining-equipment",
+      "summary": "The largest walking dragline ever built \u2014 a single, one-off machine so large it needed its own specially built rail cars just to ship its components to the mine where it was assembled.",
+      "principles": [
+        "mechanical-advantage",
+        "torque",
+        "bearings"
+      ]
+    },
+    {
+      "slug": "bagger-293",
+      "title": "TAKRAF Bagger 293",
+      "category": "mining-equipment",
+      "summary": "A bucket wheel excavator recognised by Guinness World Records as the heaviest land vehicle ever built, and \u2014 tied with its near-sister Bagger 288 \u2014 the tallest.",
+      "principles": [
+        "torque",
+        "gear-ratios",
+        "bearings"
+      ]
+    },
+    {
+      "slug": "komatsu-4100xpc",
+      "title": "Komatsu P&H 4100XPC",
+      "category": "mining-equipment",
+      "summary": "An ultra-class electric rope shovel purpose-built to load the very largest mining haul trucks, using cable and hoist mechanics that predate hydraulic excavators by decades.",
+      "principles": [
+        "mechanical-advantage",
+        "torque",
+        "planetary-gears"
+      ]
+    },
+    {
+      "slug": "bertha-tbm",
+      "title": "Bertha (Hitachi Zosen TBM)",
+      "category": "underground-equipment",
+      "summary": "At 17.5 metres in diameter, the largest earth-pressure-balance tunnel boring machine ever built, bored beneath downtown Seattle to replace the Alaskan Way Viaduct.",
+      "principles": [
+        "torque",
+        "bearings",
+        "planetary-gears"
+      ]
+    },
+    {
+      "slug": "sarens-sgc-250",
+      "title": "Sarens SGC-250 \u201cBig Carl\u201d",
+      "category": "industrial-material-handling",
+      "summary": "A purpose-built ring crane with a 5,000-tonne maximum lifting capacity, currently the largest land-based crane in the world.",
+      "principles": [
+        "mechanical-advantage",
+        "torque",
+        "hydraulic-cylinders"
+      ]
+    },
+    {
+      "slug": "kalmar-dcg330",
+      "title": "Kalmar DCG330",
+      "category": "industrial-material-handling",
+      "summary": "A heavy industrial forklift built for handling loaded shipping containers and other massive loads at ports and intermodal yards, at nearly ten times the capacity of a typical warehouse forklift.",
+      "principles": [
+        "hydraulic-cylinders",
+        "pascals-law",
+        "mechanical-advantage"
+      ]
+    },
+    {
+      "slug": "jcb-541-70",
+      "title": "JCB 541-70",
+      "category": "construction-equipment",
+      "summary": "A telescopic handler that combines a forklift's carrying capacity with a crane-like telescoping boom, reaching well beyond what any fixed-mast forklift could manage.",
+      "principles": [
+        "hydraulic-cylinders",
+        "mechanical-advantage",
+        "gear-ratios"
+      ]
+    },
+    {
+      "slug": "john-deere-x9-1100",
+      "title": "John Deere X9 1100",
+      "category": "agricultural-machinery",
+      "summary": "John Deere's flagship combine harvester, built around a twin-rotor threshing system specifically to keep pace with the widest headers and highest field speeds in modern grain harvesting.",
+      "principles": [
+        "torque",
+        "gear-ratios",
+        "bearings"
+      ]
+    },
+    {
+      "slug": "john-deere-9rx",
+      "title": "John Deere 9RX",
+      "category": "agricultural-machinery",
+      "summary": "John Deere's largest row-crop tractor, running on four independent tracks instead of wheels to put record horsepower onto soft ground without compacting it.",
+      "principles": [
+        "torque-converters",
+        "final-drives-differentials",
+        "four-stroke-diesel-cycle"
+      ]
+    },
+    {
+      "slug": "john-deere-r4045",
+      "title": "John Deere R4045",
+      "category": "agricultural-machinery",
+      "summary": "A self-propelled sprayer built to cover wide swaths of cropland quickly and precisely, applying crop protection products through booms that can stretch well beyond a football field's width.",
+      "principles": [
+        "hydraulic-cylinders",
+        "pascals-law",
+        "bearings"
+      ]
+    },
+    {
+      "slug": "epiroc-pv351",
+      "title": "Epiroc Pit Viper 351",
+      "category": "mining-equipment",
+      "summary": "A rotary blasthole drill rig built to bore the deep, wide holes mines fill with explosives to fracture rock ahead of loading \u2014 one of the largest rotary drills in regular production.",
+      "principles": [
+        "torque",
+        "hydraulic-cylinders",
+        "bearings"
+      ]
+    },
+    {
+      "slug": "ponsse-bear",
+      "title": "Ponsse Bear",
+      "category": "forestry-machinery",
+      "summary": "An eight-wheeled forest harvester built to fell, delimb, and cut trees to length in a single continuous operation, sized for the largest timber a wheeled harvester is asked to handle.",
+      "principles": [
+        "hydraulic-cylinders",
+        "pascals-law",
+        "torque"
+      ]
+    },
+    {
+      "slug": "konecranes-rtg",
+      "title": "Konecranes RTG",
+      "category": "industrial-material-handling",
+      "summary": "A rubber-tyred gantry crane that straddles multiple lanes of stacked shipping containers, moving on its own tyres between container blocks rather than running on fixed rails.",
+      "principles": [
+        "gear-ratios",
+        "mechanical-advantage",
+        "torque"
+      ]
+    },
+    {
+      "slug": "m1150-abv",
+      "title": "M1150 Assault Breacher Vehicle",
+      "category": "military-engineering-vehicles",
+      "summary": "A U.S. military combat engineering vehicle built on the M1 Abrams tank chassis, purpose-designed to clear paths through minefields and obstacle belts ahead of advancing forces.",
+      "principles": [
+        "torque-converters",
+        "final-drives-differentials",
+        "hydraulic-cylinders"
+      ]
+    },
+    {
+      "slug": "spartacus-dredger",
+      "title": "Spartacus (Cutter Suction Dredger)",
+      "category": "special-purpose-machines",
+      "summary": "The most powerful cutter suction dredger ever built, and the first in the world powered by LNG, engineered to cut through harder seabed material at greater depth than any dredger before it.",
+      "principles": [
+        "torque",
+        "bearings",
+        "hydraulic-cylinders"
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "slug": "torque",
+      "title": "Torque",
+      "domain": "mechanics",
+      "definition": "Torque is a twisting force \u2014 how hard something is being turned around an axis, rather than pushed in a straight line. It is the rotational equivalent of force, and it is the single number that decides whether an engine can turn a wheel, a bolt, or a bucket wheel the size of a building.",
+      "relatedConcepts": [
+        "mechanical-advantage",
+        "gear-ratios"
+      ]
+    },
+    {
+      "slug": "mechanical-advantage",
+      "title": "Mechanical Advantage",
+      "domain": "mechanics",
+      "definition": "Mechanical advantage is the factor by which a machine multiplies an input force. A machine with a mechanical advantage of 20 turns 50 kg of push into 1,000 kg of usable force \u2014 at the cost of the input having to move 20 times farther or faster than the output.",
+      "relatedConcepts": [
+        "torque",
+        "hydraulic-cylinders"
+      ]
+    },
+    {
+      "slug": "gear-ratios",
+      "title": "Gear Ratios",
+      "domain": "gears",
+      "definition": "A gear ratio is the number of teeth on the driven gear divided by the number of teeth on the driving gear. It tells you, in one number, how a gear pair changes rotational speed and torque as power passes through it.",
+      "relatedConcepts": [
+        "torque",
+        "planetary-gears"
+      ]
+    },
+    {
+      "slug": "planetary-gears",
+      "title": "Planetary Gears",
+      "domain": "gears",
+      "definition": "A planetary (epicyclic) gearset arranges a central sun gear, several orbiting planet gears on a carrier, and an outer ring gear with internal teeth, all meshed together and sharing one axis. Fixing any one of the three members and driving another produces a different gear ratio from the same set of parts.",
+      "relatedConcepts": [
+        "gear-ratios",
+        "final-drives-differentials"
+      ]
+    },
+    {
+      "slug": "pascals-law",
+      "title": "Pascal's Law",
+      "domain": "hydraulics",
+      "definition": "Pascal's Law states that pressure applied to a confined, incompressible fluid is transmitted equally, undiminished, in every direction throughout that fluid. It is the entire physical basis of hydraulic machinery.",
+      "relatedConcepts": [
+        "hydraulic-cylinders",
+        "mechanical-advantage"
+      ]
+    },
+    {
+      "slug": "hydraulic-cylinders",
+      "title": "Hydraulic Cylinders",
+      "domain": "hydraulics",
+      "definition": "A hydraulic cylinder is a tube, a piston, and a rod that turns fluid pressure directly into a straight-line push or pull. It is the most common actuator on any heavy machine built after about 1950, because it can deliver enormous force from a compact, sealed package with no gears at all.",
+      "relatedConcepts": [
+        "pascals-law",
+        "mechanical-advantage"
+      ]
+    },
+    {
+      "slug": "four-stroke-diesel-cycle",
+      "title": "Four-Stroke Diesel Cycle",
+      "domain": "engines",
+      "definition": "The four-stroke diesel cycle is the sequence of intake, compression, power, and exhaust that a diesel engine's piston repeats to convert fuel into rotating torque. Unlike a petrol engine, it ignites fuel using heat from compression alone, with no spark plug.",
+      "relatedConcepts": [
+        "torque",
+        "torque-converters"
+      ]
+    },
+    {
+      "slug": "torque-converters",
+      "title": "Torque Converters",
+      "domain": "clutches-transmissions",
+      "definition": "A torque converter connects an engine to a transmission with spinning fluid instead of a mechanical clutch plate. It transmits power smoothly through oil, and \u2014 unlike a simple fluid coupling \u2014 can actually multiply torque when the engine is spinning much faster than the output shaft.",
+      "relatedConcepts": [
+        "gear-ratios",
+        "final-drives-differentials"
+      ]
+    },
+    {
+      "slug": "final-drives-differentials",
+      "title": "Final Drives & Differentials",
+      "domain": "power-transmission",
+      "definition": "The final drive is the last gear reduction in a driveline, sitting right at the wheel hub or track sprocket, where the very highest torque and lowest speed in the whole machine are required. The differential, usually just upstream of it, allows the two output shafts to spin at different speeds \u2014 essential the moment the machine turns a corner.",
+      "relatedConcepts": [
+        "gear-ratios",
+        "torque"
+      ]
+    },
+    {
+      "slug": "bearings",
+      "title": "Bearings",
+      "domain": "power-transmission",
+      "definition": "A bearing is the part of a machine designed to take the friction, so nothing more expensive around it has to. It supports a rotating or sliding component while letting it move with as little resistance and wear as possible.",
+      "relatedConcepts": [
+        "torque",
+        "final-drives-differentials"
+      ]
+    }
+  ]
+}

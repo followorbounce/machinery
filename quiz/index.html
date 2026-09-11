@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Kind of Heavy Machine Are You? — Heavy Machinery Encyclopedia</title>
+<meta name="description" content="A ten-question personality quiz matched against real specifications from the 20 machines in the Heavy Machinery Encyclopedia. Answer honestly — the results are not always flattering.">
+<link rel="canonical" href="https://followorbounce.github.io/machinery/quiz/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="What Kind of Heavy Machine Are You?">
+<meta property="og:description" content="A ten-question personality quiz matched against real specifications from the 20 machines in the Heavy Machinery Encyclopedia.">
+<meta property="og:url" content="https://followorbounce.github.io/machinery/quiz/">
+<meta property="og:site_name" content="Heavy Machinery Encyclopedia">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/machinery/assets/site.css">
+<style>
+  .quiz-shell{border:1px solid var(--ink); background:var(--surface); border-radius:6px; padding:clamp(18px,4vw,32px); margin-top:8px;}
+  .quiz-progress{height:4px; background:var(--line); border-radius:2px; overflow:hidden; margin-bottom:16px;}
+  .quiz-progress-bar{height:100%; background:var(--blue); width:10%; transition:width .25s ease;}
+  .quiz-meta{font-size:11px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em; margin-bottom:18px;}
+  .quiz-card h2{font-size:clamp(19px,3vw,25px); margin-bottom:20px;}
+  .quiz-options{display:grid; gap:10px;}
+  .quiz-opt{display:block; width:100%; text-align:left; background:var(--surface); border:1px solid var(--line-strong); border-radius:5px; padding:14px 16px; font-family:var(--font-body); font-size:15px; color:var(--ink); cursor:pointer; transition:border-color .12s, background .12s;}
+  .quiz-opt:hover{border-color:var(--blue); background:var(--blue-soft);}
+  .quiz-opt:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
+  .quiz-opt.selected{border-color:var(--blue); background:var(--blue-soft); font-weight:600;}
+  .quiz-nav{display:flex; justify-content:space-between; align-items:center; margin-top:22px;}
+  .quiz-btn{font-family:var(--font-mono); font-size:12px; text-transform:uppercase; letter-spacing:.04em; border:1px solid var(--line-strong); background:var(--surface); padding:9px 16px; border-radius:4px; cursor:pointer; color:var(--ink);}
+  .quiz-btn:hover{border-color:var(--ink);}
+  .quiz-btn[hidden]{display:none;}
+  .quiz-btn.primary{background:var(--ink); color:var(--surface); border-color:var(--ink);}
+  .quiz-btn.primary:hover{background:var(--blue); border-color:var(--blue);}
+  .quiz-btn:disabled{opacity:.35; cursor:not-allowed;}
+
+  .result-hero{padding:22px 0 26px; border-bottom:3px solid var(--ink); margin-bottom:30px;}
+  .result-hero .rh-you{font-family:var(--font-mono); font-size:11.5px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em; margin:14px 0 4px;}
+  .result-hero h1{font-size:clamp(28px,5vw,42px); margin:0 0 10px;}
+  .result-hero .rh-match{font-family:var(--font-display); font-weight:700; color:var(--blue); font-size:19px;}
+  .result-desc{font-size:17px; color:var(--mid); max-width:66ch;}
+  .runner-up{font-family:var(--font-mono); font-size:12.5px; color:var(--faint); margin-top:18px;}
+  .runner-up a{color:var(--faint);}
+  .result-actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:28px;}
+  .result-actions a.quiz-btn{text-decoration:none; display:inline-block;}
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Quiz", "name": "What Kind of Heavy Machine Are You?", "about": "Heavy machinery personality matching"}</script>
+</head>
+<body>
+<header id="site-header"><div class="hdr-inner">
+  <a class="brand" href="/machinery/"><span class="mark">⚙</span> Heavy Machinery Encyclopedia</a>
+  <nav class="hdr-nav"></nav>
+</div></header>
+<main>
+<p class="crumb"><a href="/machinery/">Home</a> / Quiz</p>
+
+<section class="hero" id="quizIntro">
+  <span class="chip">10 QUESTIONS · REAL SPECS · NO TAKEBACKS</span>
+  <h1>What Kind of Heavy Machine Are You?</h1>
+  <p class="lede">Answer honestly about how you actually operate — under pressure, in a group, on a bad day — and get matched against one of the 20 real machines in this encyclopedia, based on its real engineering specifications. Results are not guaranteed to be flattering.</p>
+</section>
+
+<section class="quiz-shell" id="quizShell">
+  <div class="quiz-progress"><div class="quiz-progress-bar" id="quizBar"></div></div>
+  <div class="quiz-meta mono" id="quizMeta">QUESTION 1 / 10</div>
+  <div class="quiz-card">
+    <h2 id="quizQ"></h2>
+    <div class="quiz-options" id="quizOptions"></div>
+  </div>
+  <div class="quiz-nav">
+    <button class="quiz-btn" id="quizBack" type="button">← Back</button>
+    <button class="quiz-btn primary" id="quizNext" type="button" disabled>See My Result →</button>
+  </div>
+</section>
+
+<section class="result" id="quizResult" hidden>
+  <div class="result-hero">
+    <span class="chip" id="resCategory">CATEGORY</span>
+    <div class="rh-you">YOU ARE</div>
+    <h1 id="resArchetype"></h1>
+    <div class="rh-match">Machine match: <a id="resMachineLink" href="#"></a></div>
+  </div>
+  <p class="result-desc" id="resDesc"></p>
+  <div class="stat-row" id="resStats"></div>
+  <p class="runner-up" id="resRunnerUp"></p>
+  <div class="result-actions">
+    <a class="quiz-btn primary" id="resMachineBtn" href="#">Read the full engineering breakdown →</a>
+    <button class="quiz-btn" id="resRetake" type="button">Take It Again</button>
+  </div>
+</section>
+
+</main>
+<footer id="site-footer"><div class="ftr-inner">
+  <span>HEAVY MACHINERY ENCYCLOPEDIA — UNDERSTAND THE MACHINE THROUGH THE ENGINEERING</span>
+  <span>EDUCATIONAL — SPECIFICATIONS SIMPLIFIED FOR CLARITY, SOURCED FROM MANUFACTURER DATA</span>
+</div></footer>
+<script type="application/json" id="page-data">null</script>
+<script src="/machinery/assets/site.js" defer></script>
+<script>
+(function () {
+  "use strict";
+  var BASE = "/machinery/";
+
+  var CAT_LABELS = {
+    "construction-equipment": "Construction Equipment",
+    "mining-equipment": "Mining Equipment",
+    "underground-equipment": "Underground Equipment",
+    "agricultural-machinery": "Agricultural Machinery",
+    "forestry-machinery": "Forestry Machinery",
+    "industrial-material-handling": "Industrial & Material Handling",
+    "military-engineering-vehicles": "Military Engineering Vehicles",
+    "special-purpose-machines": "Special Purpose Machines"
+  };
+
+  /* Order matters: used as the stable tie-break when two machines score equally. */
+  var MACHINES = [
+    { slug:"liebherr-r9800", title:"Liebherr R 9800", category:"mining-equipment",
+      archetype:"The Twin-Engine Powerhouse", tagline:"When one engine isn't enough, you bring two.",
+      desc:"You don't solve problems, you overwhelm them. Like the R 9800's twin 2,000-hp diesels driving one 350-bar hydraulic system, you'd rather run two of everything than risk running out of push halfway through the job.",
+      stats:[["Operating weight","800 t"],["Engine power","4,000 hp"]] },
+    { slug:"caterpillar-d11", title:"Caterpillar D11", category:"construction-equipment",
+      archetype:"The Immovable Object", tagline:"The pile moves, or you do — and you don't.",
+      desc:"Stubborn in the best possible way. The D11 doesn't out-think an obstacle, it applies 850 horsepower through a torque converter that can stall dead against an immovable pile without killing the engine, then recover and keep going. That's basically your whole personality.",
+      stats:[["Operating weight","112.7 t"],["Flywheel power","850 hp"]] },
+    { slug:"caterpillar-994k", title:"Caterpillar 994K", category:"construction-equipment",
+      archetype:"The One-Job Perfectionist", tagline:"I do exactly one thing. I do it better than anyone.",
+      desc:"The 994K is deliberately never used to push or carry material any real distance — doing that would waste the entire reason it exists. You feel the same way about scope creep.",
+      stats:[["Operating weight","~243 t"],["Bucket capacity","19 – 24.5 m³"]] },
+    { slug:"caterpillar-24m", title:"Caterpillar 24 Motor Grader", category:"construction-equipment",
+      archetype:"The Quiet Maintainer", tagline:"Nobody notices the road until it's bad.",
+      desc:"You're the reason everything else works. The 24M never digs, dumps, or hauls anything — it just keeps the haul roads smooth enough that every other machine on site can do its job. Thankless, essential, exactly your style.",
+      stats:[["Blade length","24 ft class"],["Operating weight","~65.8 t"]] },
+    { slug:"caterpillar-797f", title:"Caterpillar 797F", category:"mining-equipment",
+      archetype:"The Dependable Giant", tagline:"624 tonnes, and I still show up on time.",
+      desc:"Steady, relentless, never the flashiest option — just the one that's always there. Like the 797F's mechanical drivetrain, chosen specifically for serviceability over flash, you'd rather be reliable than interesting.",
+      stats:[["Payload capacity","400 short tons"],["Engine power","4,000 hp"]] },
+    { slug:"big-muskie-dragline", title:"Bucyrus-Erie 4250-W “Big Muskie”", category:"mining-equipment",
+      archetype:"The One-of-a-Kind Legend", tagline:"They built exactly one of me, and that was enough.",
+      desc:"Big Muskie was so singular it needed its own specially built rail cars just to ship its components to the mine. You're the friend people describe by saying \"there's honestly no one else like them.\"",
+      stats:[["Bucket capacity","220 yd³"],["Weight","~13,000 t"]] },
+    { slug:"bagger-293", title:"TAKRAF Bagger 293", category:"mining-equipment",
+      archetype:"The Record Breaker", tagline:"Heaviest. Tallest. Not up for debate.",
+      desc:"Guinness World Records had to make a category just for you. The Bagger 293 doesn't compete for biggest — it simply is, by about 31 million pounds' worth of margin.",
+      stats:[["Weight","14,200 t"],["Height","96 m"]] },
+    { slug:"komatsu-4100xpc", title:"Komatsu P&H 4100XPC", category:"mining-equipment",
+      archetype:"The Old-School Craftsman", tagline:"Wire rope worked a century ago. It still works.",
+      desc:"While hydraulics took over everywhere else, rope shovels like the 4100XPC stuck with cable-and-hoist mechanics because, at real scale, the old way still wins. You trust proven methods over whatever's trending.",
+      stats:[["Dipper capacity","58 – 68 m³"],["Nominal payload","~109 t / pass"]] },
+    { slug:"bertha-tbm", title:"Bertha (Hitachi Zosen TBM)", category:"underground-equipment",
+      archetype:"The Resilient One", tagline:"Broke down for two years. Finished the job anyway.",
+      desc:"Bertha suffered a major mechanical failure roughly 1,000 feet into her one and only job — and finished it anyway, years late but intact. You don't quit on setbacks, you just quietly outlast them.",
+      stats:[["Diameter","17.5 m"],["Cutting disks","600"]] },
+    { slug:"sarens-sgc-250", title:"Sarens SGC-250 “Big Carl”", category:"industrial-material-handling",
+      archetype:"The Showstopper", tagline:"5,000 tonnes, one pick, everyone's watching.",
+      desc:"Big Carl doesn't do small jobs — it exists for the single lift that would otherwise take weeks of piecemeal assembly. You're built for the moment everyone remembers, not the daily grind.",
+      stats:[["Max capacity","5,000 t"],["Max height","250 m"]] },
+    { slug:"kalmar-dcg330", title:"Kalmar DCG330", category:"industrial-material-handling",
+      archetype:"The Unsung Workhorse", tagline:"Someone has to lift the container. Might as well be me.",
+      desc:"No one writes songs about port forklifts. The DCG330 just shows up, lifts 30-tonne containers all day, and gets nothing but the job satisfaction. Sound familiar?",
+      stats:[["Lift capacity","up to 33 t"],["Environment","Ports & heavy yards"]] },
+    { slug:"jcb-541-70", title:"JCB 541-70", category:"construction-equipment",
+      archetype:"The Adaptable One", tagline:"Up, out, sideways — I'll find an angle.",
+      desc:"The 541-70 reaches where a straight-mast forklift simply can't, trading raw capacity for versatility. You'd rather bend your approach than force the same solution onto every problem.",
+      stats:[["Lift capacity","4.1 t"],["Max lift height","7 m"]] },
+    { slug:"john-deere-x9-1100", title:"John Deere X9 1100", category:"agricultural-machinery",
+      archetype:"The Multitasker", tagline:"Cut it, thresh it, separate it, clean it — in one pass.",
+      desc:"The X9 runs four processes at once through a twin-rotor system so nothing has to wait its turn. You're the person running six tabs and somehow finishing all of them.",
+      stats:[["Engine power","690 hp"],["Peak unload rate","5.3 bu/s"]] },
+    { slug:"john-deere-9rx", title:"John Deere 9RX", category:"agricultural-machinery",
+      archetype:"The Gentle Giant", tagline:"Record horsepower. Doesn't leave a mark.",
+      desc:"The 9RX puts more power on the ground than almost anything in agriculture — through four tracks specifically so it doesn't compact the soil it's driving on. You're strong enough that you don't have to prove it.",
+      stats:[["Max horsepower","830 hp"],["Track configuration","4-track articulated"]] },
+    { slug:"john-deere-r4045", title:"John Deere R4045", category:"agricultural-machinery",
+      archetype:"The Wide-Reach Planner", tagline:"I cover the whole field before you've finished one row.",
+      desc:"A boom stretching well past a football field's width means the R4045 thinks in whole-field terms, not single passes. You solve problems at the scope they actually exist at.",
+      stats:[["Boom width","90 – 120 ft"],["Tank capacity","1,200 gal"]] },
+    { slug:"epiroc-pv351", title:"Epiroc Pit Viper 351", category:"mining-equipment",
+      archetype:"The Setup Specialist", tagline:"I don't finish the job. I make the finish possible.",
+      desc:"Every hole the PV351 drills exists purely so someone else can fill it with explosives later — patient, methodical prep work that makes everything downstream possible. You're the planner nobody thanks until the plan works.",
+      stats:[["Single-pass depth","19.8 m"],["Hole diameter","270 – 406 mm"]] },
+    { slug:"ponsse-bear", title:"Ponsse Bear", category:"forestry-machinery",
+      archetype:"The Efficient Multitasker", tagline:"Fell it, delimb it, cut it to length — don't stop moving.",
+      desc:"The Bear does three distinct jobs in one continuous motion instead of three separate trips. You hate doing things twice, so you just don't.",
+      stats:[["Wheel configuration","8-wheel"],["Engine torque","1,450 N·m"]] },
+    { slug:"konecranes-rtg", title:"Konecranes RTG", category:"industrial-material-handling",
+      archetype:"The Organizer", tagline:"Everything has a stack, and every stack has a place.",
+      desc:"An RTG's entire existence is keeping thousands of containers sorted across a yard, moving on its own tyres to wherever the next stack needs building. You're the one who actually knows where everything is.",
+      stats:[["Span","up to 8 rows + truck lane"],["Stack height","up to 1-over-6"]] },
+    { slug:"m1150-abv", title:"M1150 Assault Breacher Vehicle", category:"military-engineering-vehicles",
+      archetype:"The Protector", tagline:"I go first, so nobody else has to.",
+      desc:"Built on an Abrams chassis for exactly one purpose: clearing a path through danger before anyone else moves. You're the one who steps up when it actually matters.",
+      stats:[["Base chassis","M1A1 Abrams"],["Primary tools","Mine plow & line charges"]] },
+    { slug:"spartacus-dredger", title:"Spartacus (Cutter Suction Dredger)", category:"special-purpose-machines",
+      archetype:"The Trailblazer", tagline:"First LNG-powered dredger. First for a reason.",
+      desc:"Spartacus didn't just get bigger than every dredger before it — it did so running on fuel nothing else in its class used yet. You'd rather be first than merely biggest.",
+      stats:[["Fuel","LNG (first of its kind)"],["Installed power","44,180 kW"]] }
+  ];
+  var BY_SLUG = {};
+  MACHINES.forEach(function (m) { BY_SLUG[m.slug] = m; });
+
+  var QUESTIONS = [
+    { q:"A massive machine breaks down mid-job across the industry. What's your instinct?", options:[
+      { t:"Push through it — find a way to keep working anyway.", w:{"caterpillar-d11":1,"liebherr-r9800":1} },
+      { t:"Diagnose it properly, fix the actual cause, don't rush.", w:{"bertha-tbm":1,"caterpillar-24m":1} },
+      { t:"This is basically Tuesday — I plan for failure before it happens.", w:{"epiroc-pv351":1,"m1150-abv":1} },
+      { t:"Improvise with whatever I've got.", w:{"jcb-541-70":1,"spartacus-dredger":1} }
+    ]},
+    { q:"Pick your ideal signature move.", options:[
+      { t:"One overwhelming push that ends the problem in a single pass.", w:{"caterpillar-994k":1,"liebherr-r9800":1} },
+      { t:"A record nobody will beat for decades.", w:{"bagger-293":1,"big-muskie-dragline":1} },
+      { t:"The kind of lift or feat that makes the news.", w:{"sarens-sgc-250":1} },
+      { t:"Doing five jobs' worth of work in one continuous motion.", w:{"john-deere-x9-1100":1,"ponsse-bear":1} }
+    ]},
+    { q:"Your friends would describe your personality as:", options:[
+      { t:"Unstoppable once I get going.", w:{"caterpillar-d11":1,"caterpillar-797f":1,"john-deere-9rx":1} },
+      { t:"The dependable one — always shows up, never complains.", w:{"kalmar-dcg330":1,"caterpillar-797f":1} },
+      { t:"Precise, a little particular, gets it exactly right.", w:{"caterpillar-24m":1,"komatsu-4100xpc":1} },
+      { t:"Quietly the most capable person in the room.", w:{"bertha-tbm":1,"konecranes-rtg":1} }
+    ]},
+    { q:"What's your relationship with \"the biggest possible version\" of something?", options:[
+      { t:"I want to BE the biggest — records or nothing.", w:{"bagger-293":1,"big-muskie-dragline":1} },
+      { t:"I don't need to be biggest, just the best at exactly my job.", w:{"caterpillar-994k":1,"kalmar-dcg330":1} },
+      { t:"I'd rather cover more ground than be bigger in one spot.", w:{"john-deere-r4045":1,"konecranes-rtg":1} },
+      { t:"Big doesn't matter — being first to do it does.", w:{"spartacus-dredger":1,"sarens-sgc-250":1} }
+    ]},
+    { q:"How do you prefer to spend a long, hard day?", options:[
+      { t:"Grinding at full output the whole time, no real dip.", w:{"caterpillar-797f":1,"epiroc-pv351":1} },
+      { t:"Slow build, then unstoppable by the end.", w:{"caterpillar-d11":1,"liebherr-r9800":1} },
+      { t:"Short, intense bursts, then genuinely finished.", w:{"sarens-sgc-250":1,"m1150-abv":1} },
+      { t:"A steady hum nobody notices until I stop.", w:{"caterpillar-24m":1,"bertha-tbm":1,"john-deere-9rx":1} }
+    ]},
+    { q:"In a group project, your role is:", options:[
+      { t:"The one part nobody else can handle.", w:{"bagger-293":1,"komatsu-4100xpc":1,"caterpillar-994k":1} },
+      { t:"Coordinating where everything and everyone ends up.", w:{"konecranes-rtg":1,"john-deere-r4045":1} },
+      { t:"Actually finishing it, reliably, every time.", w:{"kalmar-dcg330":1,"caterpillar-797f":1} },
+      { t:"Quietly doing three people's jobs at once.", w:{"john-deere-x9-1100":1,"ponsse-bear":1} }
+    ]},
+    { q:"Pick a compliment you'd actually want to hear:", options:[
+      { t:"Nobody does it bigger than you.", w:{"big-muskie-dragline":1,"bagger-293":1} },
+      { t:"You're the most reliable person I know.", w:{"caterpillar-797f":1,"kalmar-dcg330":1} },
+      { t:"You make everyone around you more efficient.", w:{"ponsse-bear":1,"john-deere-x9-1100":1} },
+      { t:"You did something nobody's ever done before.", w:{"spartacus-dredger":1,"sarens-sgc-250":1} }
+    ]},
+    { q:"Which physical trait matters most to you?", options:[
+      { t:"Raw strength — more than almost anything else around.", w:{"liebherr-r9800":1,"big-muskie-dragline":1,"john-deere-9rx":1} },
+      { t:"Precision control down to the centimetre.", w:{"caterpillar-24m":1,"epiroc-pv351":1} },
+      { t:"Enormous reach — covering distance others can't.", w:{"jcb-541-70":1,"john-deere-r4045":1} },
+      { t:"Built to take a hit and keep going.", w:{"m1150-abv":1,"caterpillar-d11":1} }
+    ]},
+    { q:"A setback happens on the job. You:", options:[
+      { t:"Push harder — the obstacle moves or I do.", w:{"caterpillar-d11":1,"liebherr-r9800":1} },
+      { t:"Stop, diagnose exactly what broke, fix it right, resume.", w:{"bertha-tbm":1,"caterpillar-24m":1} },
+      { t:"This is exactly what the contingency plan is for.", w:{"epiroc-pv351":1,"m1150-abv":1} },
+      { t:"Shrug, adapt, route around it entirely.", w:{"jcb-541-70":1,"spartacus-dredger":1} }
+    ]},
+    { q:"What's the \"big moment\" you feel you're built for?", options:[
+      { t:"The one lift or dig everyone remembers for years.", w:{"sarens-sgc-250":1,"big-muskie-dragline":1,"bagger-293":1} },
+      { t:"Quietly finishing something everyone thought was impossible.", w:{"bertha-tbm":1,"spartacus-dredger":1} },
+      { t:"Clearing the way so everyone behind me can move forward.", w:{"m1150-abv":1,"caterpillar-d11":1} },
+      { t:"Doing the unglamorous job so well nobody thinks twice.", w:{"caterpillar-24m":1,"kalmar-dcg330":1} }
+    ]}
+  ];
+
+  var answers = new Array(QUESTIONS.length).fill(null);
+  var idx = 0;
+
+  var bar = document.getElementById("quizBar");
+  var meta = document.getElementById("quizMeta");
+  var qEl = document.getElementById("quizQ");
+  var optsEl = document.getElementById("quizOptions");
+  var backBtn = document.getElementById("quizBack");
+  var nextBtn = document.getElementById("quizNext");
+  var shell = document.getElementById("quizShell");
+  var intro = document.getElementById("quizIntro");
+  var resultEl = document.getElementById("quizResult");
+
+  function renderQuestion() {
+    var qd = QUESTIONS[idx];
+    meta.textContent = "QUESTION " + (idx + 1) + " / " + QUESTIONS.length;
+    bar.style.width = (((idx) / QUESTIONS.length) * 100 + 6) + "%";
+    qEl.textContent = qd.q;
+    optsEl.innerHTML = "";
+    qd.options.forEach(function (opt, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "quiz-opt" + (answers[idx] === i ? " selected" : "");
+      b.textContent = opt.t;
+      b.addEventListener("click", function () {
+        answers[idx] = i;
+        renderQuestion();
+        if (idx < QUESTIONS.length - 1) {
+          setTimeout(function () { idx++; renderQuestion(); }, 160);
+        } else {
+          nextBtn.disabled = false;
+        }
+      });
+      optsEl.appendChild(b);
+    });
+    backBtn.disabled = idx === 0;
+    nextBtn.hidden = idx !== QUESTIONS.length - 1;
+    nextBtn.disabled = answers[idx] == null;
+  }
+
+  backBtn.addEventListener("click", function () {
+    if (idx > 0) { idx--; renderQuestion(); }
+  });
+
+  nextBtn.addEventListener("click", function () {
+    if (answers.some(function (a) { return a == null; })) return;
+    showResult();
+  });
+
+  function computeScores() {
+    var scores = {};
+    MACHINES.forEach(function (m) { scores[m.slug] = 0; });
+    answers.forEach(function (choice, qi) {
+      var opt = QUESTIONS[qi].options[choice];
+      if (!opt) return;
+      Object.keys(opt.w).forEach(function (slug) { scores[slug] += opt.w[slug]; });
+    });
+    return scores;
+  }
+
+  function showResult() {
+    var scores = computeScores();
+    var ranked = MACHINES.slice().sort(function (a, b) { return scores[b.slug] - scores[a.slug]; });
+    var winner = ranked[0];
+    var runnerUp = ranked[1];
+
+    document.getElementById("resCategory").textContent = CAT_LABELS[winner.category] || winner.category;
+    document.getElementById("resArchetype").textContent = winner.archetype;
+    var link = document.getElementById("resMachineLink");
+    link.textContent = winner.title;
+    link.href = BASE + "machines/" + winner.slug + "/";
+    document.getElementById("resDesc").textContent = winner.desc;
+
+    var statRow = document.getElementById("resStats");
+    statRow.innerHTML = "";
+    winner.stats.forEach(function (s) {
+      var cell = document.createElement("div");
+      cell.className = "stat";
+      cell.innerHTML = '<span class="l">' + s[0] + '</span><span class="v">' + s[1] + '</span>';
+      statRow.appendChild(cell);
+    });
+
+    var ru = document.getElementById("resRunnerUp");
+    if (runnerUp && scores[runnerUp.slug] > 0 && scores[runnerUp.slug] >= scores[winner.slug] - 1) {
+      ru.innerHTML = "Nearly went the other way — close second: <a href=\"" + BASE + "machines/" + runnerUp.slug + "/\">" + runnerUp.title + "</a> (" + runnerUp.archetype + ")";
+    } else {
+      ru.textContent = "";
+    }
+
+    var mbtn = document.getElementById("resMachineBtn");
+    mbtn.href = BASE + "machines/" + winner.slug + "/";
+
+    intro.hidden = true;
+    shell.hidden = true;
+    resultEl.hidden = false;
+    resultEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  document.getElementById("resRetake").addEventListener("click", function () {
+    answers = new Array(QUESTIONS.length).fill(null);
+    idx = 0;
+    resultEl.hidden = true;
+    intro.hidden = false;
+    shell.hidden = false;
+    renderQuestion();
+    shell.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  renderQuestion();
+})();
+</script>
+</body>
+</html>

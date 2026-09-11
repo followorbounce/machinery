@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pascal's Law — Heavy Machinery Encyclopedia</title>
+<meta name="description" content="Pascal's Law states that pressure applied to a confined, incompressible fluid is transmitted equally, undiminished, in every direction throughout that fluid. It is the entire physical basis of hydraulic machinery.">
+<link rel="canonical" href="https://followorbounce.github.io/machinery/concepts/pascals-law/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pascal's Law — Heavy Machinery Encyclopedia">
+<meta property="og:description" content="Pascal's Law states that pressure applied to a confined, incompressible fluid is transmitted equally, undiminished, in every direction throughout that fluid. It is the entire physical basis of hydraulic machinery.">
+<meta property="og:url" content="https://followorbounce.github.io/machinery/concepts/pascals-law/">
+<meta property="og:site_name" content="Heavy Machinery Encyclopedia">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/machinery/assets/site.css">
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Pascal's Law", "description": "Pascal's Law states that pressure applied to a confined, incompressible fluid is transmitted equally, undiminished, in every direction throughout that fluid. It is the entire physical basis of hydraulic machinery.", "isPartOf": {"@type": "WebSite", "name": "Heavy Machinery Encyclopedia", "url": "https://followorbounce.github.io/machinery/"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Heavy Machinery Encyclopedia", "item": "https://followorbounce.github.io/machinery/"}, {"@type": "ListItem", "position": 2, "name": "Hydraulics", "item": "https://followorbounce.github.io/machinery/concepts/#hydraulics"}, {"@type": "ListItem", "position": 3, "name": "Pascal's Law", "item": "https://followorbounce.github.io/machinery/concepts/pascals-law/"}]}]</script>
+</head>
+<body>
+<header id="site-header"><div class="hdr-inner">
+  <a class="brand" href="/machinery/"><span class="mark">⚙</span> Heavy Machinery Encyclopedia</a>
+  <nav class="hdr-nav"></nav>
+</div></header>
+<main>
+<div class="crumb"><a href="/machinery/">Home</a> / <a href="/machinery/concepts/#hydraulics">Hydraulics</a> / Pascal's Law</div>
+<section class="hero">
+<span class="chip domain">Hydraulics</span>
+<h1>Pascal's Law</h1>
+<p class="lede">Pascal's Law states that pressure applied to a confined, incompressible fluid is transmitted equally, undiminished, in every direction throughout that fluid. It is the entire physical basis of hydraulic machinery.</p>
+<div class="stat-row"><div class="stat"><span class="l">Formulated by</span><span class="v">Blaise Pascal, 1653</span></div><div class="stat"><span class="l">States</span><span class="v">Pressure transmits equally</span></div><div class="stat"><span class="l">Powers</span><span class="v">Every hydraulic machine on this site</span></div></div>
+</section>
+<section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>Pascal's Law states that pressure applied to a confined, incompressible fluid is transmitted equally, undiminished, in every direction throughout that fluid. It is the entire physical basis of hydraulic machinery.</p></section>
+<section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>Because pressure is force divided by area, the same pressure acting on a large piston produces far more force than it does acting on a small one. Push a small piston with a modest force and connect it through oil to a much larger piston, and the large piston pushes back with a proportionally larger force — trading distance for force exactly the way a lever does, except the 'lever arm' here is a ratio of areas, and the force can be redirected anywhere a hose can reach.</p></section>
+<section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Pascal's Law</div><div class="eq-b">P = F / A</div><div class="eq-n">Pressure is uniform throughout a connected, static fluid.</div></div><div class="eq-box"><div class="eq-l">Force multiplication</div><div class="eq-b">F₂ = F₁ × (A₂ / A₁)</div><div class="eq-n">A₁, A₂ = the areas of the input and output pistons. This is the master equation behind every hydraulic cylinder on this site.</div></div></section>
+
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Hydraulic Force Multiplier</h2>
+<p>Set the input piston force and the ratio between the two piston areas to see how much force the output piston delivers.</p>
+<div class="sim-panel">
+  <div class="gear-viewport"><svg id="hydSvg" viewBox="0 0 340 220" width="100%" height="100%" role="img" aria-label="Two connected hydraulic cylinders of different piston area"></svg></div>
+  <div class="sim-row"><span>INPUT FORCE</span><span class="mono" id="hydForceVal">50 kg</span></div>
+  <input id="hydForceSlider" type="range" min="5" max="200" step="1" value="50">
+  <div class="sim-row"><span>OUTPUT / INPUT AREA RATIO</span><span class="mono" id="hydRatioVal">10 : 1</span></div>
+  <input id="hydRatioSlider" type="range" min="1" max="30" step="1" value="10">
+  <div class="sim-readout" id="hydReadout"></div>
+  <p class="sim-note">Pressure is transmitted equally throughout the fluid — only the piston areas differ.</p>
+</div>
+</section>
+<section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>A car's hydraulic brakes are a direct, everyday application of the same law that lets a 40-tonne excavator curl its bucket: a small pedal piston, a much larger caliper piston.</li><li>Hydraulic fluid is treated as incompressible for these calculations — it isn't perfectly so, but the compression is small enough at working pressures to ignore for engineering purposes.</li><li>Because pressure, not force, is what's constant throughout the system, the same hydraulic pump can drive a small, fast cylinder and a huge, slow one simultaneously, just by giving them different piston areas.</li></ul></section>
+<section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
+<section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
+</main>
+<footer id="site-footer"><div class="ftr-inner">
+  <span>HEAVY MACHINERY ENCYCLOPEDIA — UNDERSTAND THE MACHINE THROUGH THE ENGINEERING</span>
+  <span>EDUCATIONAL — SPECIFICATIONS SIMPLIFIED FOR CLARITY, SOURCED FROM MANUFACTURER DATA</span>
+</div></footer>
+<script type="application/json" id="page-data">{"type": "concept", "slug": "pascals-law", "domain": "hydraulics", "relatedConcepts": ["hydraulic-cylinders", "mechanical-advantage"]}</script>
+<script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var f = document.getElementById('hydForceSlider'), r = document.getElementById('hydRatioSlider');
+  var fVal = document.getElementById('hydForceVal'), rVal = document.getElementById('hydRatioVal');
+  var svg = document.getElementById('hydSvg'), readout = document.getElementById('hydReadout');
+  if(!f||!r||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  function draw(){
+    var force=parseFloat(f.value), ratio=parseFloat(r.value);
+    fVal.textContent=force+' kg'; rVal.textContent=ratio+' : 1';
+    var outForce = force*ratio;
+    var rIn=14, rOut=Math.min(70, rIn*Math.sqrt(ratio));
+    svg.innerHTML='';
+    svg.appendChild(ns('rect',{x:10,y:170,width:320,height:10,fill:'#c3c9ce'}));
+    svg.appendChild(ns('rect',{x:40-rIn,y:70,width:rIn*2,height:100,fill:'none',stroke:'#151a1f','stroke-width':2}));
+    svg.appendChild(ns('rect',{x:40-rIn+2,y:170-6,width:rIn*2-4,height:6,fill:'#2454c7'}));
+    var pistonInY = 170-6-18;
+    svg.appendChild(ns('rect',{x:40-rIn+1,y:pistonInY,width:rIn*2-2,height:10,fill:'#151a1f'}));
+    var cx2=250;
+    svg.appendChild(ns('rect',{x:cx2-rOut,y:170-Math.max(20,rOut*1.3),width:rOut*2,height:Math.max(20,rOut*1.3),fill:'none',stroke:'#151a1f','stroke-width':2}));
+    var outH = Math.max(20, rOut*1.3);
+    svg.appendChild(ns('rect',{x:cx2-rOut+2,y:170-6,width:rOut*2-4,height:6,fill:'#c1541d'}));
+    var pistonOutY = 170-6-Math.min(outH-10, 18+ratio*1.2);
+    svg.appendChild(ns('rect',{x:cx2-rOut+1,y:Math.max(170-outH+2,pistonOutY),width:rOut*2-2,height:10,fill:'#151a1f'}));
+    svg.appendChild(ns('line',{x1:40,y1:180,x2:cx2,y2:180,stroke:'#151a1f','stroke-width':2}));
+    var lbl1=ns('text',{x:40,y:60,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'10',fill:'#2454c7'}); lbl1.textContent='INPUT'; svg.appendChild(lbl1);
+    var lbl2=ns('text',{x:cx2,y:Math.max(30,170-outH-8),'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'10',fill:'#c1541d'}); lbl2.textContent='OUTPUT'; svg.appendChild(lbl2);
+    var cells=[
+      ['INPUT FORCE', force+' kg'],
+      ['AREA RATIO', ratio+' : 1'],
+      ['OUTPUT FORCE', outForce.toLocaleString()+' kg']
+    ];
+    readout.innerHTML = cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  f.addEventListener('input',draw); r.addEventListener('input',draw);
+  draw();
+})();
+</script>
+</body>
+</html>

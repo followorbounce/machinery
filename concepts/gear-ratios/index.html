@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gear Ratios — Heavy Machinery Encyclopedia</title>
+<meta name="description" content="A gear ratio is the number of teeth on the driven gear divided by the number of teeth on the driving gear. It tells you, in one number, how a gear pair changes rotational speed and torque as power passes through it.">
+<link rel="canonical" href="https://followorbounce.github.io/machinery/concepts/gear-ratios/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Gear Ratios — Heavy Machinery Encyclopedia">
+<meta property="og:description" content="A gear ratio is the number of teeth on the driven gear divided by the number of teeth on the driving gear. It tells you, in one number, how a gear pair changes rotational speed and torque as power passes through it.">
+<meta property="og:url" content="https://followorbounce.github.io/machinery/concepts/gear-ratios/">
+<meta property="og:site_name" content="Heavy Machinery Encyclopedia">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/machinery/assets/site.css">
+<script type="application/ld+json">[{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Gear Ratios", "description": "A gear ratio is the number of teeth on the driven gear divided by the number of teeth on the driving gear. It tells you, in one number, how a gear pair changes rotational speed and torque as power passes through it.", "isPartOf": {"@type": "WebSite", "name": "Heavy Machinery Encyclopedia", "url": "https://followorbounce.github.io/machinery/"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Heavy Machinery Encyclopedia", "item": "https://followorbounce.github.io/machinery/"}, {"@type": "ListItem", "position": 2, "name": "Gears", "item": "https://followorbounce.github.io/machinery/concepts/#gears"}, {"@type": "ListItem", "position": 3, "name": "Gear Ratios", "item": "https://followorbounce.github.io/machinery/concepts/gear-ratios/"}]}]</script>
+</head>
+<body>
+<header id="site-header"><div class="hdr-inner">
+  <a class="brand" href="/machinery/"><span class="mark">⚙</span> Heavy Machinery Encyclopedia</a>
+  <nav class="hdr-nav"></nav>
+</div></header>
+<main>
+<div class="crumb"><a href="/machinery/">Home</a> / <a href="/machinery/concepts/#gears">Gears</a> / Gear Ratios</div>
+<section class="hero">
+<span class="chip domain">Gears</span>
+<h1>Gear Ratios</h1>
+<p class="lede">A gear ratio is the number of teeth on the driven gear divided by the number of teeth on the driving gear. It tells you, in one number, how a gear pair changes rotational speed and torque as power passes through it.</p>
+<div class="stat-row"><div class="stat"><span class="l">Formula</span><span class="v">ratio = teeth(out) / teeth(in)</span></div><div class="stat"><span class="l">Trades</span><span class="v">Speed for torque</span></div><div class="stat"><span class="l">Used in</span><span class="v">Every geared drivetrain on this site</span></div></div>
+</section>
+<section class="block" id="definition"><h2><span class="n">01</span>Definition</h2><p>A gear ratio is the number of teeth on the driven gear divided by the number of teeth on the driving gear. It tells you, in one number, how a gear pair changes rotational speed and torque as power passes through it.</p></section>
+<section class="block" id="principle"><h2><span class="n">02</span>Physical Principle</h2><p>Mesh a small gear (the pinion) into a large one, and the large gear turns slower but with proportionally more torque — the same mechanical-advantage trade-off as a lever, delivered through interlocking teeth instead of a rigid bar. Reverse the pair and you get the opposite trade: speed instead of torque. A final drive on a bulldozer might use a ratio as steep as 6:1 specifically because the tracks need overwhelming torque at walking speed, never high speed at low torque.</p></section>
+<section class="block" id="math"><h2><span class="n">03</span>Mathematical Foundation</h2><div class="eq-box"><div class="eq-l">Gear ratio</div><div class="eq-b">GR = N₂ / N₁</div><div class="eq-n">N₁ = teeth on the driving gear, N₂ = teeth on the driven gear.</div></div><div class="eq-box"><div class="eq-l">Speed change</div><div class="eq-b">ω₂ = ω₁ / GR</div><div class="eq-n">Output speed falls by exactly the same factor the ratio raises torque — energy is conserved, not created.</div></div></section>
+
+<section class="block" id="interactive"><h2><span class="n">04</span>Interactive Diagram — Gear Pair Simulator</h2>
+<p>Set the tooth count on the driving gear (A) and the driven gear (B) and watch the ratio, output speed, and torque multiplication update live.</p>
+<div class="sim-panel">
+  <div class="gear-viewport"><svg id="gearSvg" viewBox="0 0 300 300" width="100%" height="100%" role="img" aria-label="Two meshed gears rotating according to the chosen tooth counts"></svg></div>
+  <div class="sim-row"><span>TEETH ON A (driving)</span><span class="mono" id="teethAVal">20</span></div>
+  <input id="teethASlider" type="range" min="8" max="60" step="1" value="20">
+  <div class="sim-row"><span>TEETH ON B (driven)</span><span class="mono" id="teethBVal">40</span></div>
+  <input id="teethBSlider" type="range" min="8" max="60" step="1" value="40">
+  <div class="sim-readout" id="gearReadout"></div>
+  <p class="sim-note">Input speed fixed at 1,000 RPM on gear A.</p>
+</div>
+</section>
+<section class="block" id="facts"><h2><span class="n">05</span>Interesting Facts</h2><ul class="facts-list"><li>Two meshed gears always spin in opposite directions — an odd number of gears in a train restores the original direction, an even number reverses it.</li><li>A gear ratio doesn't have to come from a single pair: a gearbox chains several ratios together, multiplying them, to cover a huge range from one small engine.</li><li>The teeth count, not the gear's physical size, is what sets the ratio — two gears of very different diameters but the same tooth pitch and count produce a 1:1 ratio.</li></ul></section>
+<section class="block" id="applications"><h2><span class="n">06</span>Real-World Applications</h2><div id="realWorldApplications" class="related-grid"></div></section>
+<section class="block" id="related"><h2><span class="n">07</span>Related Concepts</h2><div id="relatedConcepts" class="related-grid"></div></section>
+</main>
+<footer id="site-footer"><div class="ftr-inner">
+  <span>HEAVY MACHINERY ENCYCLOPEDIA — UNDERSTAND THE MACHINE THROUGH THE ENGINEERING</span>
+  <span>EDUCATIONAL — SPECIFICATIONS SIMPLIFIED FOR CLARITY, SOURCED FROM MANUFACTURER DATA</span>
+</div></footer>
+<script type="application/json" id="page-data">{"type": "concept", "slug": "gear-ratios", "domain": "gears", "relatedConcepts": ["torque", "planetary-gears"]}</script>
+<script src="/machinery/assets/site.js" defer></script>
+
+<script>
+(function(){
+  var a = document.getElementById('teethASlider'), b = document.getElementById('teethBSlider');
+  var aVal = document.getElementById('teethAVal'), bVal = document.getElementById('teethBVal');
+  var svg = document.getElementById('gearSvg'), readout = document.getElementById('gearReadout');
+  if(!a||!b||!svg) return;
+  function ns(tag,attrs){ var el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(var k in attrs) el.setAttribute(k,attrs[k]); return el; }
+  function gearPath(cx, cy, r, teeth){
+    var toothDepth = r*0.14, pts=[];
+    for(var i=0;i<teeth;i++){
+      var a0 = (i/teeth)*Math.PI*2, a1=((i+0.5)/teeth)*Math.PI*2, a2=((i+1)/teeth)*Math.PI*2;
+      pts.push([cx+Math.cos(a0)*r, cy+Math.sin(a0)*r]);
+      pts.push([cx+Math.cos(a1)*(r+toothDepth), cy+Math.sin(a1)*(r+toothDepth)]);
+      pts.push([cx+Math.cos(a2)*r, cy+Math.sin(a2)*r]);
+    }
+    return 'M'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L')+' Z';
+  }
+  function draw(){
+    var ta=parseInt(a.value,10), tb=parseInt(b.value,10);
+    aVal.textContent=ta; bVal.textContent=tb;
+    var ratio = tb/ta;
+    var rpmA=1000, rpmB=rpmA/ratio;
+    var ra = 30+ta*1.3, rb = 30+tb*1.3;
+    var cx1=110, cy=150, cx2=cx1+ra+rb;
+    if(cx2>270){ var scale=(270-cx1)/(ra+rb); ra*=scale; rb*=scale; cx2=cx1+ra+rb; }
+    svg.innerHTML='';
+    svg.setAttribute('viewBox','0 0 '+(cx2+ra+20)+' 300');
+    var g1=ns('path',{d:gearPath(cx1,cy,ra,ta), fill:'#e8edfb', stroke:'#2454c7', 'stroke-width':1.5});
+    var g2=ns('path',{d:gearPath(cx2,cy,rb,tb), fill:'#f7e8df', stroke:'#c1541d', 'stroke-width':1.5});
+    svg.appendChild(g1); svg.appendChild(g2);
+    svg.appendChild(ns('circle',{cx:cx1,cy:cy,r:4,fill:'#151a1f'}));
+    svg.appendChild(ns('circle',{cx:cx2,cy:cy,r:4,fill:'#151a1f'}));
+    var t1=ns('text',{x:cx1,y:cy+5,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'11','font-weight':'700',fill:'#2454c7'}); t1.textContent='A'; svg.appendChild(t1);
+    var t2=ns('text',{x:cx2,y:cy+5,'text-anchor':'middle','font-family':'IBM Plex Mono, monospace','font-size':'11','font-weight':'700',fill:'#c1541d'}); t2.textContent='B'; svg.appendChild(t2);
+    var dur1=(2/(rpmA/60)).toFixed(2), dur2=(2/(rpmB/60)).toFixed(2);
+    g1.style.transformOrigin=cx1+'px '+cy+'px'; g1.style.animation='spin '+dur1+'s linear infinite';
+    g2.style.transformOrigin=cx2+'px '+cy+'px'; g2.style.animation='spin-rev '+dur2+'s linear infinite';
+    var cells=[
+      ['GEAR RATIO', ratio.toFixed(2)+' : 1'],
+      ['OUTPUT SPEED (B)', rpmB.toFixed(0)+' RPM'],
+      ['TORQUE MULTIPLIER', ratio.toFixed(2)+'×']
+    ];
+    readout.innerHTML = cells.map(function(c){return '<div class="cell"><span class="l">'+c[0]+'</span><span class="v">'+c[1]+'</span></div>';}).join('');
+  }
+  var style=document.createElement('style');
+  style.textContent='@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@keyframes spin-rev{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}@media (prefers-reduced-motion:reduce){#gearSvg path{animation:none!important;}}';
+  document.head.appendChild(style);
+  a.addEventListener('input',draw); b.addEventListener('input',draw);
+  draw();
+})();
+</script>
+</body>
+</html>
