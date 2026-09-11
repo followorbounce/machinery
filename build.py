@@ -946,7 +946,7 @@ def scale_compare_svg(kind, value, label, slug):
 
     VB_W, VB_H, GROUND = 340, 220, 196
     HUMAN_H, HUMAN_X = 60, 26
-    X_LEFT, MAX_W, MAX_H, MIN_H = 88, 232, 178, 40
+    X_LEFT, MAX_W, MAX_H, MIN_H = 88, 232, 178, 78
 
     span = _RATIO_LOG_MAX - _RATIO_LOG_MIN
     t = 0.5 if span <= 0 else max(0.0, min(1.0, (math.log10(ratio) - _RATIO_LOG_MIN) / span))
@@ -961,12 +961,12 @@ def scale_compare_svg(kind, value, label, slug):
         '<line x1="4" y1="%d" x2="%d" y2="%d" stroke="#c3c9ce" stroke-width="2"/>'
         '<circle cx="%d" cy="%d" r="8" fill="%s"/>'
         '<rect x="%d" y="%d" width="16" height="%d" rx="5" fill="%s"/>'
-        '<text x="%d" y="%d" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8a92a0">1.8 m</text>'
+        '<text x="%d" y="%d" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#5b6672">1.8 m</text>'
         % (GROUND, VB_W - 6, GROUND, HUMAN_X, GROUND - HUMAN_H + 8, MID, HUMAN_X - 8, GROUND - HUMAN_H + 16, HUMAN_H - 16, MID, HUMAN_X, GROUND + 14)
     )
     ratio_lbl = (
-        '<text x="%.1f" y="%.1f" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="%s">%s×</text>'
-        % (X_LEFT + (w_i * s) / 2, max(ty - 8, 14), BLUE, "{:,.0f}".format(ratio))
+        '<text x="%.1f" y="%.1f" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="18" font-weight="700" fill="%s">%s×</text>'
+        % (X_LEFT + (w_i * s) / 2, max(ty - 10, 18), BLUE, "{:,.0f}".format(ratio))
     )
     svg = (
         '<svg viewBox="0 0 %d %d" role="img" aria-label="Scale comparison: this machine\'s %s versus %s">%s%s%s</svg>'
