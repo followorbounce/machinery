@@ -134,7 +134,7 @@ table.spec-table td:last-child{font-family:var(--font-mono); font-weight:600; te
 
 /* ---------- scale comparison (machine hero) ---------- */
 .scale-compare{display:flex; align-items:center; gap:16px; margin-top:20px; padding-top:16px; border-top:1px dashed var(--line-strong); flex-wrap:wrap;}
-.scale-compare svg{display:block; width:150px; height:170px; flex:0 0 auto;}
+.scale-compare svg{display:block; width:min(100%,320px); height:auto; aspect-ratio:340/220; flex:0 0 auto;}
 .sc-caption{font-family:var(--font-mono); font-size:12px; color:var(--mid); margin:0; max-width:52ch;}
 
 /* ---------- footer ---------- */

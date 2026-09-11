@@ -749,37 +749,231 @@ def stat_row(stats):
 # an average adult's height/weight/hand-twist, not a spec of any machine.
 HUMAN_REF = {"weight": (0.075, "t", "an average adult's weight (~75 kg)"), "length": (1.8, "m", "an average adult's height (1.8 m)"), "torque": (10, "N·m", "a firm human hand-twist (~10 N·m)")}
 
+# Simplified blueprint-style side-profile silhouettes, one per machine, hand-drawn from
+# each machine's own real proportions (not traced from any photo). Each entry is
+# (local_width, local_height, svg_fragment) in a top-left-origin coordinate system
+# where y = local_height is the ground line the machine stands on.
+INK, BLUE, BLUESOFT, MID = "#151a1f", "#2454c7", "#e8edfb", "#5b6672"
+SILHOUETTES = {
+    "liebherr-r9800": (200, 104, (
+        '<rect x="10" y="92" width="160" height="12" fill="%s"/>'
+        '<rect x="68" y="55" width="55" height="37" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="74" y="62" width="20" height="14" fill="%s"/>'
+        '<polyline points="95,55 148,22 178,48" fill="none" stroke="%s" stroke-width="6" stroke-linecap="round"/>'
+        '<polyline points="178,48 196,80" fill="none" stroke="%s" stroke-width="5" stroke-linecap="round"/>'
+        '<polygon points="188,72 206,72 202,92 186,90" fill="%s"/>'
+    ) % (INK, BLUESOFT, BLUE, MID, INK, INK, MID)),
+    "caterpillar-d11": (190, 84, (
+        '<rect x="5" y="72" width="150" height="12" fill="%s"/>'
+        '<rect x="45" y="42" width="90" height="32" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<polygon points="5,50 28,40 33,74 10,74" fill="%s"/>'
+        '<rect x="95" y="20" width="30" height="24" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="127" y="10" width="5" height="20" fill="%s"/>'
+    ) % (INK, BLUESOFT, BLUE, MID, BLUESOFT, BLUE, INK)),
+    "caterpillar-994k": (200, 98, (
+        '<circle cx="150" cy="82" r="16" fill="%s"/>'
+        '<circle cx="72" cy="82" r="16" fill="%s"/>'
+        '<rect x="95" y="42" width="80" height="38" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="125" y="20" width="30" height="24" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<polyline points="98,52 45,32" fill="none" stroke="%s" stroke-width="6" stroke-linecap="round"/>'
+        '<polygon points="14,20 48,20 42,50 10,46" fill="%s"/>'
+    ) % (INK, INK, BLUESOFT, BLUE, BLUESOFT, BLUE, INK, MID)),
+    "caterpillar-24m": (220, 89, (
+        '<rect x="30" y="40" width="160" height="18" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<circle cx="48" cy="80" r="9" fill="%s"/>'
+        '<circle cx="168" cy="80" r="9" fill="%s"/>'
+        '<circle cx="190" cy="80" r="9" fill="%s"/>'
+        '<rect x="68" y="18" width="28" height="24" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="172" y="28" width="32" height="14" fill="%s"/>'
+        '<rect x="95" y="58" width="50" height="9" fill="%s"/>'
+    ) % (BLUESOFT, BLUE, INK, INK, INK, BLUESOFT, BLUE, MID, MID)),
+    "caterpillar-797f": (210, 108, (
+        '<rect x="20" y="68" width="170" height="14" fill="%s"/>'
+        '<circle cx="45" cy="90" r="14" fill="%s"/>'
+        '<circle cx="150" cy="92" r="16" fill="%s"/>'
+        '<circle cx="182" cy="92" r="16" fill="%s"/>'
+        '<polygon points="50,68 62,24 190,15 190,68" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="20" y="45" width="26" height="24" fill="%s"/>'
+    ) % (INK, INK, INK, INK, BLUESOFT, BLUE, MID)),
+    "big-muskie-dragline": (230, 186, (
+        '<rect x="30" y="150" width="140" height="28" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="35" y="176" width="20" height="10" fill="%s"/>'
+        '<rect x="140" y="176" width="20" height="10" fill="%s"/>'
+        '<line x1="60" y1="150" x2="210" y2="25" stroke="%s" stroke-width="6" stroke-linecap="round"/>'
+        '<line x1="205" y1="35" x2="188" y2="125" stroke="%s" stroke-width="2"/>'
+        '<polygon points="172,122 202,122 196,142 178,140" fill="%s"/>'
+    ) % (BLUESOFT, BLUE, INK, INK, INK, MID, MID)),
+    "bagger-293": (260, 132, (
+        '<rect x="20" y="122" width="26" height="10" fill="%s"/>'
+        '<rect x="52" y="122" width="26" height="10" fill="%s"/>'
+        '<rect x="84" y="122" width="26" height="10" fill="%s"/>'
+        '<rect x="116" y="122" width="26" height="10" fill="%s"/>'
+        '<rect x="148" y="122" width="26" height="10" fill="%s"/>'
+        '<rect x="90" y="72" width="70" height="46" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<line x1="140" y1="90" x2="235" y2="112" stroke="%s" stroke-width="6" stroke-linecap="round"/>'
+        '<circle cx="242" cy="115" r="18" fill="none" stroke="%s" stroke-width="3"/>'
+        '<line x1="224" y1="115" x2="260" y2="115" stroke="%s" stroke-width="1"/>'
+        '<line x1="242" y1="97" x2="242" y2="133" stroke="%s" stroke-width="1"/>'
+        '<line x1="112" y1="80" x2="30" y2="42" stroke="%s" stroke-width="5" stroke-linecap="round"/>'
+        '<rect x="8" y="30" width="26" height="18" fill="%s"/>'
+    ) % (INK, INK, INK, INK, INK, BLUESOFT, BLUE, INK, INK, INK, INK, INK, MID)),
+    "komatsu-4100xpc": (200, 120, (
+        '<rect x="15" y="108" width="140" height="12" fill="%s"/>'
+        '<rect x="60" y="62" width="60" height="42" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<line x1="95" y1="62" x2="150" y2="18" stroke="%s" stroke-width="6" stroke-linecap="round"/>'
+        '<line x1="150" y1="18" x2="183" y2="72" stroke="%s" stroke-width="5" stroke-linecap="round"/>'
+        '<line x1="150" y1="18" x2="185" y2="65" stroke="%s" stroke-width="1.5"/>'
+        '<polygon points="176,58 198,58 194,80 180,78" fill="%s"/>'
+    ) % (INK, BLUESOFT, BLUE, INK, INK, MID, MID)),
+    "bertha-tbm": (230, 88, (
+        '<rect x="55" y="25" width="165" height="45" rx="20" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<circle cx="55" cy="47" r="38" fill="none" stroke="%s" stroke-width="4"/>'
+        '<line x1="55" y1="9" x2="55" y2="85" stroke="%s" stroke-width="1.5"/>'
+        '<line x1="17" y1="47" x2="93" y2="47" stroke="%s" stroke-width="1.5"/>'
+        '<line x1="29" y1="21" x2="81" y2="73" stroke="%s" stroke-width="1.5"/>'
+        '<line x1="29" y1="73" x2="81" y2="21" stroke="%s" stroke-width="1.5"/>'
+        '<rect x="205" y="55" width="18" height="18" fill="%s"/>'
+    ) % (BLUESOFT, BLUE, INK, INK, INK, INK, INK, MID)),
+    "sarens-sgc-250": (170, 248, (
+        '<rect x="25" y="228" width="120" height="18" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="18" y="208" width="28" height="20" fill="%s"/>'
+        '<rect x="122" y="208" width="28" height="20" fill="%s"/>'
+        '<line x1="85" y1="228" x2="140" y2="20" stroke="%s" stroke-width="5" stroke-linecap="round"/>'
+        '<line x1="95" y1="200" x2="120" y2="170" stroke="%s" stroke-width="2"/>'
+        '<line x1="100" y1="160" x2="122" y2="130" stroke="%s" stroke-width="2"/>'
+        '<line x1="105" y1="120" x2="127" y2="90" stroke="%s" stroke-width="2"/>'
+        '<line x1="110" y1="80" x2="132" y2="50" stroke="%s" stroke-width="2"/>'
+    ) % (BLUESOFT, BLUE, MID, MID, INK, INK, INK, INK, INK)),
+    "kalmar-dcg330": (170, 112, (
+        '<rect x="50" y="55" width="80" height="35" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="120" y="38" width="26" height="55" fill="%s"/>'
+        '<rect x="44" y="14" width="5" height="76" fill="%s"/>'
+        '<rect x="55" y="14" width="5" height="76" fill="%s"/>'
+        '<rect x="8" y="84" width="42" height="6" fill="%s"/>'
+        '<rect x="8" y="92" width="42" height="6" fill="%s"/>'
+        '<circle cx="65" cy="100" r="12" fill="%s"/>'
+        '<circle cx="112" cy="100" r="12" fill="%s"/>'
+    ) % (BLUESOFT, BLUE, MID, INK, INK, INK, INK, INK, INK)),
+    "jcb-541-70": (185, 114, (
+        '<rect x="58" y="58" width="60" height="32" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<circle cx="75" cy="100" r="14" fill="%s"/>'
+        '<circle cx="140" cy="100" r="14" fill="%s"/>'
+        '<line x1="90" y1="62" x2="162" y2="22" stroke="%s" stroke-width="8" stroke-linecap="round"/>'
+        '<rect x="158" y="16" width="22" height="6" fill="%s"/>'
+        '<rect x="52" y="34" width="30" height="26" fill="%s" stroke="%s" stroke-width="2"/>'
+    ) % (BLUESOFT, BLUE, INK, INK, INK, INK, BLUESOFT, BLUE)),
+    "john-deere-x9-1100": (220, 110, (
+        '<circle cx="60" cy="90" r="20" fill="%s"/>'
+        '<circle cx="180" cy="95" r="13" fill="%s"/>'
+        '<rect x="70" y="48" width="130" height="40" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<ellipse cx="130" cy="42" rx="45" ry="16" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="8" y="80" width="60" height="12" fill="%s"/>'
+        '<line x1="150" y1="55" x2="192" y2="25" stroke="%s" stroke-width="5" stroke-linecap="round"/>'
+    ) % (INK, INK, BLUESOFT, BLUE, BLUESOFT, BLUE, MID, INK)),
+    "john-deere-9rx": (200, 78, (
+        '<rect x="15" y="58" width="60" height="20" fill="%s"/>'
+        '<rect x="125" y="58" width="60" height="20" fill="%s"/>'
+        '<rect x="50" y="33" width="100" height="30" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="85" y="13" width="35" height="25" fill="%s" stroke="%s" stroke-width="2"/>'
+    ) % (INK, INK, BLUESOFT, BLUE, BLUESOFT, BLUE)),
+    "john-deere-r4045": (260, 106, (
+        '<circle cx="90" cy="90" r="16" fill="%s"/>'
+        '<circle cx="170" cy="90" r="16" fill="%s"/>'
+        '<rect x="70" y="48" width="120" height="32" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="60" y="52" width="24" height="24" fill="%s"/>'
+        '<line x1="0" y1="28" x2="260" y2="28" stroke="%s" stroke-width="3"/>'
+        '<line x1="130" y1="48" x2="130" y2="28" stroke="%s" stroke-width="2"/>'
+    ) % (INK, INK, BLUESOFT, BLUE, MID, INK, INK)),
+    "epiroc-pv351": (140, 186, (
+        '<rect x="15" y="172" width="110" height="14" fill="%s"/>'
+        '<rect x="30" y="135" width="80" height="37" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="63" y="10" width="14" height="125" fill="%s"/>'
+        '<rect x="92" y="115" width="30" height="22" fill="%s"/>'
+    ) % (INK, BLUESOFT, BLUE, INK, MID)),
+    "ponsse-bear": (230, 105, (
+        '<circle cx="40" cy="92" r="13" fill="%s"/>'
+        '<circle cx="78" cy="92" r="13" fill="%s"/>'
+        '<circle cx="140" cy="92" r="13" fill="%s"/>'
+        '<circle cx="178" cy="92" r="13" fill="%s"/>'
+        '<rect x="50" y="48" width="120" height="35" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="55" y="26" width="28" height="24" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<line x1="150" y1="52" x2="208" y2="28" stroke="%s" stroke-width="6" stroke-linecap="round"/>'
+        '<rect x="204" y="12" width="24" height="30" rx="7" fill="%s"/>'
+    ) % (INK, INK, INK, INK, BLUESOFT, BLUE, BLUESOFT, BLUE, INK, MID)),
+    "konecranes-rtg": (220, 202, (
+        '<line x1="20" y1="188" x2="70" y2="18" stroke="%s" stroke-width="7" stroke-linecap="round"/>'
+        '<line x1="200" y1="188" x2="150" y2="18" stroke="%s" stroke-width="7" stroke-linecap="round"/>'
+        '<rect x="62" y="8" width="96" height="14" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<rect x="100" y="26" width="20" height="10" fill="%s"/>'
+        '<line x1="110" y1="36" x2="110" y2="55" stroke="%s" stroke-width="2"/>'
+        '<rect x="85" y="55" width="50" height="10" fill="%s"/>'
+        '<circle cx="24" cy="193" r="9" fill="%s"/>'
+        '<circle cx="58" cy="193" r="9" fill="%s"/>'
+        '<circle cx="162" cy="193" r="9" fill="%s"/>'
+        '<circle cx="196" cy="193" r="9" fill="%s"/>'
+    ) % (INK, INK, BLUESOFT, BLUE, MID, INK, MID, INK, INK, INK, INK)),
+    "m1150-abv": (190, 82, (
+        '<rect x="10" y="70" width="150" height="12" fill="%s"/>'
+        '<rect x="35" y="44" width="100" height="30" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<polygon points="5,52 28,42 33,74 10,74" fill="%s"/>'
+        '<rect x="88" y="26" width="45" height="20" fill="%s"/>'
+    ) % (INK, BLUESOFT, BLUE, MID, MID)),
+    "spartacus-dredger": (260, 124, (
+        '<polygon points="10,92 250,92 235,62 40,62" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<line x1="0" y1="97" x2="260" y2="97" stroke="%s" stroke-width="1.5" stroke-dasharray="4,3"/>'
+        '<rect x="150" y="35" width="40" height="28" fill="%s" stroke="%s" stroke-width="2"/>'
+        '<line x1="190" y1="35" x2="190" y2="6" stroke="%s" stroke-width="4"/>'
+        '<line x1="40" y1="62" x2="10" y2="112" stroke="%s" stroke-width="6" stroke-linecap="round"/>'
+        '<circle cx="8" cy="114" r="8" fill="%s"/>'
+    ) % (BLUESOFT, BLUE, MID, BLUESOFT, BLUE, INK, INK, MID)),
+}
 
-def scale_compare_svg(kind, value, label=None):
+
+def _human_ratio(scale_tuple):
+    kind, value, _ = scale_tuple
+    return value / HUMAN_REF[kind][0]
+
+
+_SCALE_RATIOS = [_human_ratio(m["scale"]) for m in MACHINES]
+_RATIO_LOG_MIN = math.log10(min(_SCALE_RATIOS))
+_RATIO_LOG_MAX = math.log10(max(_SCALE_RATIOS))
+
+
+def scale_compare_svg(kind, value, label, slug):
     ref, unit, refword = HUMAN_REF[kind]
     ratio = value / ref
-    human_h = 34
-    bar_h = min(150, human_h * math.sqrt(ratio))
-    vb_h = 170
-    human_y = vb_h - 14 - human_h
-    bar_y = vb_h - 14 - bar_h
     desc = label or {"weight": "weight", "length": "size", "torque": "torque"}[kind]
+
+    VB_W, VB_H, GROUND = 340, 220, 196
+    HUMAN_H, HUMAN_X = 60, 26
+    X_LEFT, MAX_W, MAX_H, MIN_H = 88, 232, 178, 40
+
+    span = _RATIO_LOG_MAX - _RATIO_LOG_MIN
+    t = 0.5 if span <= 0 else max(0.0, min(1.0, (math.log10(ratio) - _RATIO_LOG_MIN) / span))
+    target_h = MIN_H + (MAX_H - MIN_H) * t
+
+    w_i, h_i, frag = SILHOUETTES[slug]
+    s = min(target_h / h_i, MAX_W / w_i)
+    ty = GROUND - h_i * s
+    silhouette = '<g transform="translate(%.2f,%.2f) scale(%.4f)">%s</g>' % (X_LEFT, ty, s, frag)
+
+    human = (
+        '<line x1="4" y1="%d" x2="%d" y2="%d" stroke="#c3c9ce" stroke-width="2"/>'
+        '<circle cx="%d" cy="%d" r="8" fill="%s"/>'
+        '<rect x="%d" y="%d" width="16" height="%d" rx="5" fill="%s"/>'
+        '<text x="%d" y="%d" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8a92a0">1.8 m</text>'
+        % (GROUND, VB_W - 6, GROUND, HUMAN_X, GROUND - HUMAN_H + 8, MID, HUMAN_X - 8, GROUND - HUMAN_H + 16, HUMAN_H - 16, MID, HUMAN_X, GROUND + 14)
+    )
+    ratio_lbl = (
+        '<text x="%.1f" y="%.1f" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="700" fill="%s">%s×</text>'
+        % (X_LEFT + (w_i * s) / 2, max(ty - 8, 14), BLUE, "{:,.0f}".format(ratio))
+    )
     svg = (
-        '<svg viewBox="0 0 150 %d" role="img" aria-label="Scale comparison: %s versus %s">'
-        '<line x1="4" y1="%d" x2="146" y2="%d" stroke="#c3c9ce" stroke-width="2"/>'
-        '<circle cx="26" cy="%d" r="7" fill="#5b6672"/>'
-        '<rect x="19" y="%d" width="14" height="%d" rx="4" fill="#5b6672"/>'
-        '<text x="26" y="%d" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#8a92a0">1.8 m</text>'
-        '<rect x="90" y="%.1f" width="40" height="%.1f" rx="3" fill="#2454c7"/>'
-        '<text x="110" y="%.1f" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="700" fill="#2454c7">%s×</text>'
-        '</svg>'
-        % (
-            vb_h, esc(desc), esc(refword),
-            vb_h - 14, vb_h - 14,
-            human_y + 7,
-            human_y + 14, human_h - 14,
-            vb_h - 2,
-            bar_y, bar_h,
-            max(bar_y - 8, 10), "{:,.0f}".format(ratio),
-        )
+        '<svg viewBox="0 0 %d %d" role="img" aria-label="Scale comparison: this machine\'s %s versus %s">%s%s%s</svg>'
+        % (VB_W, VB_H, esc(desc), esc(refword), human, silhouette, ratio_lbl)
     )
     caption = (
-        '<p class="sc-caption">%s: <strong>%s %s</strong> — about <strong>%s×</strong> %s. (Bar height is compressed for very large ratios; the multiplier is exact.)</p>'
+        '<p class="sc-caption">%s: <strong>%s %s</strong> — about <strong>%s×</strong> %s. (Silhouette size reflects relative scale on a compressed axis; the multiplier is exact.)</p>'
         % (desc.capitalize(), value, unit, "{:,.0f}".format(ratio), refword)
     )
     return '<div class="scale-compare">%s%s</div>' % (svg, caption)
@@ -907,7 +1101,7 @@ def render_machine(m, concepts_by_slug):
     body.append('<p class="lede">%s</p>' % m["summary"])
     body.append(stat_row(m["stats"]))
     scale_kind, scale_val, scale_label = m["scale"]
-    body.append(scale_compare_svg(scale_kind, scale_val, scale_label))
+    body.append(scale_compare_svg(scale_kind, scale_val, scale_label, m["slug"]))
     body.append('</section>')
 
     sections = [
