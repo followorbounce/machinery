@@ -193,7 +193,7 @@ MACHINES = [
         "slug": "liebherr-r9800", "title": "Liebherr R 9800", "category": "mining-equipment",
         "summary": "An 800-tonne hydraulic mining excavator built to load the very largest haul trucks in a handful of passes, and one of the two or three largest hydraulic excavators ever put into series production.",
         "purpose": "It exists to close the gap between hydraulic excavators and the largest cable shovels — giving mines a hydraulic machine that can still load the biggest haul trucks in a handful of passes, without switching to cable-and-hoist mechanics.",
-        "scale": ("weight", 800, None),
+        "scale": (10.34, "transport height"),
         "stats": [("Operating weight", "800 t"), ("Bucket capacity", "up to 42 m³"), ("Engine power", "4,000 hp"), ("Configuration", "Backhoe or face shovel")],
         "history": "Liebherr introduced the R 9800 in 2011 to compete directly with cable-operated electric mining shovels on the biggest jobs, betting that hydraulics — by then dominant at every smaller size class — could scale all the way to the top of the market. It has since become a fixture at copper and oil-sands operations that need a shovel able to fill a 400-tonne haul truck in three to five passes.",
         "components": [
@@ -221,7 +221,7 @@ MACHINES = [
         "slug": "caterpillar-d11", "title": "Caterpillar D11", "category": "construction-equipment",
         "summary": "Caterpillar's largest production bulldozer, built to push more material per pass than any other dozer in its catalogue, almost exclusively in mining rather than general construction.",
         "purpose": "Built for one job only: moving more material per dozer pass than anything else in Caterpillar's catalogue, on ground too demanding for a mid-size dozer to clear economically.",
-        "scale": ("weight", 112.7, None),
+        "scale": (4.5, "overall height, top of exhaust stack"),
         "stats": [("Operating weight", "112.7 t"), ("Flywheel power", "850 hp"), ("Blade capacity", "43.6 m³"), ("Engine", "Cat C32 ACERT")],
         "history": "The D11 lineage traces back to Caterpillar's push through the 1980s and 1990s to build ever-larger track-type tractors for surface mining, where a single dozer pass moving more material directly cuts cost per tonne. Successive D11 generations (D11N, D11R, D11T, and today's D11) have kept the same basic architecture — single engine, single blade, elevated sprocket drive — while steadily raising weight and horsepower.",
         "components": [
@@ -248,7 +248,7 @@ MACHINES = [
         "slug": "caterpillar-994k", "title": "Caterpillar 994K", "category": "construction-equipment",
         "summary": "Caterpillar's largest wheel loader, built to load haul trucks directly rather than push or carry material any real distance — a specialist at one job, done at enormous scale.",
         "purpose": "Exists purely to keep the largest haul trucks fed — a wheel loader sized specifically to fill a 150 – 300 t truck in three to five passes, nothing more.",
-        "scale": ("weight", 243, None),
+        "scale": (7.1, "overall height, ground to top of ROPS"),
         "stats": [("Operating weight", "~243 t"), ("Engine power", "1,739 hp"), ("Bucket capacity", "19 – 24.5 m³"), ("Loading targets", "150 – 300 t haul trucks")],
         "history": "Wheel loaders scaled up alongside haul trucks through the late 20th century, because a loader too small for its truck fleet becomes the bottleneck at every load cycle. The 994 series has been Caterpillar's answer at the top end of that race since the 1990s, growing through the 994D, 994F, and 994H before the current 994K, matched specifically to load the largest Cat mining trucks in three to five bucket passes.",
         "components": [
@@ -275,7 +275,7 @@ MACHINES = [
         "slug": "caterpillar-24m", "title": "Caterpillar 24 Motor Grader", "category": "construction-equipment",
         "summary": "The largest motor grader Caterpillar builds, sized specifically to maintain the wide haul roads inside a mine rather than the narrower roads a construction grader typically finishes.",
         "purpose": "Exists to keep haul roads within the tight tolerance mine-truck tyres depend on — a job that pays for the machine's size many times over in extended tyre life alone.",
-        "scale": ("weight", 65.8, None),
+        "scale": (4.45, "overall height, top of cab"),
         "stats": [("Operating weight", "~65.8 t"), ("Blade length", "24 ft class"), ("Role", "Mine haul-road maintenance"), ("Wheel configuration", "6×4 or 6×6")],
         "history": "Motor graders scaled up specifically to keep pace with the haul roads mining trucks depend on: a rutted or poorly cambered haul road wears tyres and suspension components on every truck that crosses it, all day, so a grader capable of maintaining a very wide road in fewer passes pays for its size many times over. Caterpillar's 24-class graders have occupied the top of that size range for decades.",
         "components": [
@@ -302,7 +302,7 @@ MACHINES = [
         "slug": "caterpillar-797f", "title": "Caterpillar 797F", "category": "mining-equipment",
         "summary": "The largest mechanical-drive haul truck Caterpillar builds — a 400-ton-payload truck powered by a single, enormous diesel engine rather than the diesel-electric drivetrains some rivals use at this size.",
         "purpose": "Built to move the maximum payload a single mechanical drivetrain can handle, so a mine can haul more ore per truck without switching to a diesel-electric design.",
-        "scale": ("weight", 624, "loaded gross weight"),
+        "scale": (7.44, "overall height, top of ROPS (empty)"),
         "stats": [("Payload capacity", "400 short tons"), ("Engine", "Cat C175-20, 4,000 hp"), ("Drive type", "Mechanical (torque converter + gearbox)"), ("Tyres", "6, at roughly 4 m diameter each")],
         "history": "Caterpillar introduced the original 797 in 1998 specifically to compete at the top of the ultra-class haul truck market with a mechanical drivetrain, at a time when many rivals of similar size used diesel-electric drive. Successive versions — 797, 797B, and today's 797F — have kept that mechanical-drive bet while steadily raising engine output, culminating in the C175-20's 4,000 hp, about 450 hp more than its predecessor.",
         "components": [
@@ -329,7 +329,7 @@ MACHINES = [
         "slug": "big-muskie-dragline", "title": "Bucyrus-Erie 4250-W “Big Muskie”", "category": "mining-equipment",
         "summary": "The largest walking dragline ever built — a single, one-off machine so large it needed its own specially built rail cars just to ship its components to the mine where it was assembled.",
         "purpose": "Purpose-built for one site: stripping Ohio coal overburden faster than any smaller dragline could, at a scale no other machine of its kind has matched before or since.",
-        "scale": ("length", 94, "boom length"),
+        "scale": (68, "overall standing height (the boom itself reached about 94 m)"),
         "stats": [("Bucket capacity", "220 cubic yards (170 m³)"), ("Boom length", "310 ft (94 m)"), ("Weight", "~13,000 t"), ("Status", "Retired 1991, partly preserved")],
         "history": "Bucyrus-Erie built the 4250-W, nicknamed Big Muskie, in 1969 for the Central Ohio Coal Company, as the single largest walking dragline the company ever produced and the only one of its exact model built. It worked Ohio coal country for over two decades before rising sulphur-regulation costs and reclamation-law changes made it uneconomical, and it was retired in 1991; only its bucket survives today, preserved as a monument.",
         "components": [
@@ -356,7 +356,7 @@ MACHINES = [
         "slug": "bagger-293", "title": "TAKRAF Bagger 293", "category": "mining-equipment",
         "summary": "A bucket wheel excavator recognised by Guinness World Records as the heaviest land vehicle ever built, and — tied with its near-sister Bagger 288 — the tallest.",
         "purpose": "Exists to strip overburden continuously, fast enough to keep pace with round-the-clock lignite extraction at a single German mine — a job cyclic excavators couldn't match.",
-        "scale": ("length", 96, "height"),
+        "scale": (96, "height"),
         "stats": [("Length", "225 m"), ("Height", "96 m"), ("Weight", "14,200 t"), ("Bucket wheel diameter", "21.3 m, 18 buckets")],
         "history": "TAKRAF built Bagger 293 in Germany in 1995 as an evolution of the earlier Bagger 288, purpose-built to strip overburden fast enough to keep pace with coal extraction at the Hambach open-pit lignite mine. Both machines were designed around the same core insight: continuous bucket-wheel excavation moves far more material per hour than any cyclic (dig-swing-dump) excavator, at the cost of a machine so large it can only ever work one pit.",
         "components": [
@@ -383,7 +383,7 @@ MACHINES = [
         "slug": "komatsu-4100xpc", "title": "Komatsu P&H 4100XPC", "category": "mining-equipment",
         "summary": "An ultra-class electric rope shovel purpose-built to load the very largest mining haul trucks, using cable and hoist mechanics that predate hydraulic excavators by decades.",
         "purpose": "Built to load the very largest haul trucks in the fewest possible passes, using cable-and-hoist mechanics because, at this scale, rope still out-lifts hydraulics.",
-        "scale": ("weight", 108.9, "payload per pass"),
+        "scale": (10.2, "approximate — dumping height with door open; no full overall-height spec found"),
         "stats": [("Dipper capacity", "58 – 68 m³"), ("Nominal payload", "~109 t per pass"), ("Drive", "AC electric"), ("Loads trucks up to", "363 t")],
         "history": "The P&H rope-shovel line, now built under Komatsu after its acquisition of P&H Mining, descends from cable shovel designs that predate hydraulic excavators entirely — cable and hoist rigging scales to enormous sizes more readily than hydraulic cylinders do, which is exactly why the largest shovels in the world are still rope shovels rather than hydraulic ones. The 4100XPC sits at the top of that lineage, engineered specifically around loading modern ultra-class haul trucks in as few passes as possible.",
         "components": [
@@ -410,7 +410,7 @@ MACHINES = [
         "slug": "bertha-tbm", "title": "Bertha (Hitachi Zosen TBM)", "category": "underground-equipment",
         "summary": "At 17.5 metres in diameter, the largest earth-pressure-balance tunnel boring machine ever built, bored beneath downtown Seattle to replace the Alaskan Way Viaduct.",
         "purpose": "Purpose-built for a single bore beneath downtown Seattle — replacing an earthquake-damaged viaduct without digging up the street above it.",
-        "scale": ("length", 17.5, "cutterhead diameter"),
+        "scale": (17.5, "cutterhead diameter"),
         "stats": [("Diameter", "17.5 m"), ("Length", "99 m"), ("Weight", "~6,700 t"), ("Cutting disks", "600")],
         "history": "Hitachi Zosen built Bertha in Osaka for the Washington State Department of Transportation's Alaskan Way Viaduct replacement project, assembling it in Seattle in mid-2013 for a single, purpose-specific bore. It began tunnelling in July 2013, suffered a major mechanical failure after roughly 1,000 feet that halted work for about two years while it was partially disassembled and repaired in place, and finally completed its bore in 2017.",
         "components": [
@@ -437,7 +437,7 @@ MACHINES = [
         "slug": "sarens-sgc-250", "title": "Sarens SGC-250 “Big Carl”", "category": "industrial-material-handling",
         "summary": "A purpose-built ring crane with a 5,000-tonne maximum lifting capacity, currently the largest land-based crane in the world.",
         "purpose": "Exists for the single mega-lift that would otherwise take weeks of piecemeal crane work — built specifically for projects like Hinkley Point C's prefabricated reactor modules.",
-        "scale": ("length", 250, "max lift height"),
+        "scale": (250, "max height with jib extended (a working reach, not a parked height)"),
         "stats": [("Max capacity", "5,000 t"), ("Max boom length", "160 m"), ("Max height", "250 m"), ("Ground pressure system", "Ring-supported, not standard crawlers")],
         "history": "Sarens developed the SGC-250 (Sarens Giant Crane, 250,000 tonne-metre capacity) specifically for a handful of megaprojects too large for any existing mobile or crawler crane, most prominently the Hinkley Point C nuclear power station in the UK, where it lifts entire prefabricated reactor-building modules in single picks that would otherwise require weeks of piecemeal assembly.",
         "components": [
@@ -464,7 +464,7 @@ MACHINES = [
         "slug": "kalmar-dcg330", "title": "Kalmar DCG330", "category": "industrial-material-handling",
         "summary": "A heavy industrial forklift built for handling loaded shipping containers and other massive loads at ports and intermodal yards, at nearly ten times the capacity of a typical warehouse forklift.",
         "purpose": "Built to lift what a standard warehouse forklift never could — a fully loaded shipping container — without needing a dedicated overhead crane at every terminal.",
-        "scale": ("weight", 33, "max lift capacity"),
+        "scale": (4.5, "overall height, mast lowered (sources range 3.4 – 7.0 m by mast option)"),
         "stats": [("Lift capacity", "up to 33 t"), ("Typical load", "Loaded shipping containers"), ("Drive modes", "Multiple, operator-selectable"), ("Environment", "Ports, heavy industrial yards")],
         "history": "Kalmar's heavy forklift range grew directly out of the container-shipping boom of the late 20th century: standard forklifts topped out at a few tonnes, nowhere near enough to lift a fully loaded ISO shipping container, so an entirely separate class of purpose-built heavy forklift emerged around ports and rail yards. The DCG180–330 series sits at the top of that range, covering the heaviest loads a mast-type forklift, rather than a dedicated container handler, is asked to lift.",
         "components": [
@@ -491,7 +491,7 @@ MACHINES = [
         "slug": "jcb-541-70", "title": "JCB 541-70", "category": "construction-equipment",
         "summary": "A telescopic handler that combines a forklift's carrying capacity with a crane-like telescoping boom, reaching well beyond what any fixed-mast forklift could manage.",
         "purpose": "Exists to reach both up and out from one machine, covering jobs that would otherwise need a forklift for height and a separate crane for reach.",
-        "scale": ("length", 7, "max lift height"),
+        "scale": (7, "max lift height (boom raised; stowed transport height is ~2.5 m)"),
         "stats": [("Lift capacity", "4.1 t"), ("Max lift height", "7 m"), ("Boom type", "Single telescoping section"), ("Typical use", "Construction, agriculture")],
         "history": "Telehandlers emerged from the recognition that construction and farm sites often need to lift a load both up and out — over a wall, into an upper floor, or across a trench — something neither a forklift's vertical mast nor a crane's slower rigging handles well on its own. JCB, one of the type's pioneering manufacturers since the 1970s, has kept refining the format ever since; the 541-70 represents the mid-size class most common on general construction sites.",
         "components": [
@@ -518,7 +518,7 @@ MACHINES = [
         "slug": "john-deere-x9-1100", "title": "John Deere X9 1100", "category": "agricultural-machinery",
         "summary": "John Deere's flagship combine harvester, built around a twin-rotor threshing system specifically to keep pace with the widest headers and highest field speeds in modern grain harvesting.",
         "purpose": "Built to remove the threshing bottleneck that limited how wide a header a combine could actually keep fed, so operators can harvest more acres inside a short weather window.",
-        "scale": ("weight", 12.5, "grain tank's contents, at typical wheat bulk density"),
+        "scale": (3.5, "transport height (figure for the closely related X9 1000; the 1100 is likely very similar)"),
         "stats": [("Engine power", "690 hp"), ("Grain tank capacity", "16,210 L"), ("Rotors", "Twin 24-inch"), ("Peak unload rate", "5.3 bu/s")],
         "history": "Combine harvesters have grown steadily larger for the same reason every machine on this page has: a wider, faster machine covers more acres per labour-hour, which matters enormously during a harvest window that can close in days if weather turns. John Deere's X9 series, introduced in the early 2020s, was purpose-built around a completely new twin-rotor separation system specifically to remove the throughput bottleneck that limited how wide a header the company's previous single-rotor combines could actually keep fed.",
         "components": [
@@ -545,7 +545,7 @@ MACHINES = [
         "slug": "john-deere-9rx", "title": "John Deere 9RX", "category": "agricultural-machinery",
         "summary": "John Deere's largest row-crop tractor, running on four independent tracks instead of wheels to put record horsepower onto soft ground without compacting it.",
         "purpose": "Exists to put record horsepower on the ground without compacting the soil underneath it — the one trade-off a wheeled tractor at this power level can't avoid.",
-        "scale": ("weight", 38.1, "max ballast it can carry"),
+        "scale": (3.9, "transport height (varies slightly by 9RX model variant)"),
         "stats": [("Max horsepower", "830 hp"), ("Track configuration", "4-track articulated"), ("Hydraulic flow", "168 gal/min"), ("Max ballast", "up to 84,000 lb")],
         "history": "John Deere's 9RX line pushed row-crop tractor horsepower to new highs through the 2010s and 2020s specifically by pairing ever-larger engines with four-track undercarriages instead of the twin-track or wheeled designs common at lower power levels — more contact area spreads the same weight over more soil, reducing the compaction that otherwise undoes much of the benefit of a bigger tractor. The current top model, the 9RX 830, tops the lineup at 830 horsepower.",
         "components": [
@@ -572,7 +572,7 @@ MACHINES = [
         "slug": "john-deere-r4045", "title": "John Deere R4045", "category": "agricultural-machinery",
         "summary": "A self-propelled sprayer built to cover wide swaths of cropland quickly and precisely, applying crop protection products through booms that can stretch well beyond a football field's width.",
         "purpose": "Built to apply crop protection across an entire field width in a fraction of the passes a smaller sprayer would need, when a treatment window can close in days.",
-        "scale": ("length", 36.6, "max boom span"),
+        "scale": (4.0, "estimated overall height — manufacturer spec not found (only ground clearance, 1.47 m, is documented)"),
         "stats": [("Engine power", "346 hp"), ("Tank capacity", "1,200 gal"), ("Boom width", "90 – 120 ft"), ("Max application rate", "230 gal/min")],
         "history": "Self-propelled sprayers replaced towed, tractor-pulled sprayers for large operations because a dedicated chassis can be built taller (clearing standing crop without damaging it), lighter per unit of ground pressure, and faster across the field between fills. John Deere introduced the R4045 as, at the time, the largest sprayer in its Class 4 lineup, built specifically around wider booms and a bigger tank than the machines it replaced.",
         "components": [
@@ -599,7 +599,7 @@ MACHINES = [
         "slug": "epiroc-pv351", "title": "Epiroc Pit Viper 351", "category": "mining-equipment",
         "summary": "A rotary blasthole drill rig built to bore the deep, wide holes mines fill with explosives to fracture rock ahead of loading — one of the largest rotary drills in regular production.",
         "purpose": "Exists purely to prepare rock for blasting — drilling the holes a mine later fills with explosives, a job that has to finish before any of the site's excavators can start.",
-        "scale": ("length", 19.8, "single-pass drill depth"),
+        "scale": (19.8, "mast height, approximated from single-pass drill depth"),
         "stats": [("Hole diameter", "270 – 406 mm"), ("Single-pass depth", "19.8 m"), ("Bit load capacity", "56.7 t"), ("Drilling method", "Rotary tricone")],
         "history": "Rotary blasthole drilling replaced older percussion drilling methods at large open-pit mines because rotary bits, under enough downward force, cut faster and more consistently through hard rock at the diameters mine blasting patterns actually need. Atlas Copco (now Epiroc, after the 2018 split) developed the Pit Viper line specifically for this large-diameter, high-productivity segment, with the 351 sitting near the top of the range.",
         "components": [
@@ -626,7 +626,7 @@ MACHINES = [
         "slug": "ponsse-bear", "title": "Ponsse Bear", "category": "forestry-machinery",
         "summary": "An eight-wheeled forest harvester built to fell, delimb, and cut trees to length in a single continuous operation, sized for the largest timber a wheeled harvester is asked to handle.",
         "purpose": "Built for timber too large for Ponsse's mid-size harvesters, doing the felling, delimbing, and cutting-to-length in one pass instead of three separate machine trips.",
-        "scale": ("torque", 1450, "engine torque"),
+        "scale": (3.86, "overall height, top of cab"),
         "stats": [("Engine power", "354 hp"), ("Wheel configuration", "8-wheel"), ("Harvester head", "Felling, delimbing, bucking"), ("Engine torque", "1,450 N·m")],
         "history": "Mechanised harvesting replaced chainsaw felling crews across much of the industrialised forestry world from the late 20th century onward, driven by the same labour-productivity and safety logic behind every large machine on this site. Ponsse, a Finnish forestry-equipment specialist, introduced the Bear as its largest harvester specifically to handle bigger timber than its mid-size models, using an eight-wheel chassis for the flotation and stability that size of tree demands.",
         "components": [
@@ -653,7 +653,7 @@ MACHINES = [
         "slug": "konecranes-rtg", "title": "Konecranes RTG", "category": "industrial-material-handling",
         "summary": "A rubber-tyred gantry crane that straddles multiple lanes of stacked shipping containers, moving on its own tyres between container blocks rather than running on fixed rails.",
         "purpose": "Exists to keep a container yard's stacks organised and moving without needing fixed rail infrastructure, repositioning between blocks under its own power as vessel schedules shift.",
-        "scale": ("weight", 65, "max lift capacity"),
+        "scale": (25, "estimated structure height — no manufacturer spec found; derived from clearing six stacked containers plus the beam and hoist"),
         "stats": [("Lifting capacity", "up to 65 t under spreader"), ("Span", "up to 8 container rows + truck lane"), ("Stack height", "up to 1-over-6"), ("Power options", "Diesel, hybrid, electric, battery")],
         "history": "Container terminals adopted gantry cranes broadly as container shipping scaled through the late 20th century, needing something faster and more space-efficient than mobile cranes or forklifts stacking boxes several high. Rubber-tyred gantries in particular offered an advantage rail-mounted gantries couldn't: the ability to reposition between different container blocks without fixed rail infrastructure, at some cost in precision and speed compared to a railed system.",
         "components": [
@@ -680,7 +680,7 @@ MACHINES = [
         "slug": "m1150-abv", "title": "M1150 Assault Breacher Vehicle", "category": "military-engineering-vehicles",
         "summary": "A U.S. military combat engineering vehicle built on the M1 Abrams tank chassis, purpose-designed to clear paths through minefields and obstacle belts ahead of advancing forces.",
         "purpose": "Built for exactly one mission: clearing a path through mines and obstacle belts before anyone else in the formation has to cross them.",
-        "scale": ("weight", 72, None),
+        "scale": (3.0, "estimated overall height — reliable spec not found for the Abrams hull plus stowed mine-clearing gear"),
         "stats": [("Base chassis", "M1A1 Abrams"), ("Weight", "~72 t"), ("Engine", "Honeywell AGT1500C, 1,500 hp"), ("Primary tools", "Mine plow, line charges")],
         "history": "Combat engineering vehicles built on main battle tank chassis date back decades, on the logic that a vehicle clearing a path under fire needs the same armour protection as the tanks following behind it. The M1150 ABV replaced earlier, less-protected mine-clearing vehicles by mounting breaching equipment directly onto a standard M1A1 Abrams hull, giving breaching crews the same survivability as the armoured units they support.",
         "components": [
@@ -707,7 +707,7 @@ MACHINES = [
         "slug": "spartacus-dredger", "title": "Spartacus (Cutter Suction Dredger)", "category": "special-purpose-machines",
         "summary": "The most powerful cutter suction dredger ever built, and the first in the world powered by LNG, engineered to cut through harder seabed material at greater depth than any dredger before it.",
         "purpose": "Exists to cut through harder seabed material at greater depth than any dredger before it, while running on a fuel — LNG — nothing else in its class used yet.",
-        "scale": ("length", 164, "overall length"),
+        "scale": (10, "moulded depth, hull only (keel to main deck; masts and gantry above deck add more but aren't documented)"),
         "stats": [("Installed power", "44,180 kW"), ("Length", "164 m"), ("Max dredging depth", "45 m"), ("Fuel", "LNG (first of its kind)")],
         "history": "Belgian dredging contractor DEME commissioned Spartacus from Dutch shipbuilder Royal IHC specifically to reach seabed material at depths and hardness beyond what the existing dredging fleet could economically handle, delivered in 2019 as, at the time, the most powerful cutter suction dredger in the world. Its LNG propulsion was a deliberate first for the class, aimed at cutting emissions from a vessel that otherwise burns enormous amounts of fuel continuously during operation.",
         "components": [
@@ -747,7 +747,6 @@ def stat_row(stats):
 
 # Illustrative human reference points used only for the hero "scale comparison" —
 # an average adult's height/weight/hand-twist, not a spec of any machine.
-HUMAN_REF = {"weight": (0.075, "t", "an average adult's weight (~75 kg)"), "length": (1.8, "m", "an average adult's height (1.8 m)"), "torque": (10, "N·m", "a firm human hand-twist (~10 N·m)")}
 
 # Simplified blueprint-style side-profile silhouettes, one per machine, hand-drawn from
 # each machine's own real proportions (not traced from any photo). Each entry is
@@ -929,52 +928,53 @@ SILHOUETTES = {
 }
 
 
-def _human_ratio(scale_tuple):
-    kind, value, _ = scale_tuple
-    return value / HUMAN_REF[kind][0]
+HUMAN_HEIGHT_M = 1.8
 
 
-_SCALE_RATIOS = [_human_ratio(m["scale"]) for m in MACHINES]
-_RATIO_LOG_MIN = math.log10(min(_SCALE_RATIOS))
-_RATIO_LOG_MAX = math.log10(max(_SCALE_RATIOS))
-
-
-def scale_compare_svg(kind, value, label, slug):
-    ref, unit, refword = HUMAN_REF[kind]
-    ratio = value / ref
-    desc = label or {"weight": "weight", "length": "size", "torque": "torque"}[kind]
+def scale_compare_svg(height_m, label, slug):
+    """The machine silhouette is always drawn at a fixed, maximally legible size;
+    the human figure is the one that scales, sized by the true ratio between the
+    machine's real height and an average adult's height. Equipment size never
+    changes from page to page — only how big the human looks next to it does."""
+    ratio = height_m / HUMAN_HEIGHT_M
+    desc = label or "overall height"
 
     VB_W, VB_H, GROUND = 340, 220, 196
-    HUMAN_H, HUMAN_X = 60, 26
-    X_LEFT, MAX_W, MAX_H, MIN_H = 88, 232, 178, 78
-
-    span = _RATIO_LOG_MAX - _RATIO_LOG_MIN
-    t = 0.5 if span <= 0 else max(0.0, min(1.0, (math.log10(ratio) - _RATIO_LOG_MIN) / span))
-    target_h = MIN_H + (MAX_H - MIN_H) * t
+    X_LEFT, MAX_W, MAX_H = 88, 232, 178
 
     w_i, h_i, frag = SILHOUETTES[slug]
-    s = min(target_h / h_i, MAX_W / w_i)
-    ty = GROUND - h_i * s
+    s = min(MAX_H / h_i, MAX_W / w_i)
+    machine_px_h = h_i * s
+    ty = GROUND - machine_px_h
     silhouette = '<g transform="translate(%.2f,%.2f) scale(%.4f)">%s</g>' % (X_LEFT, ty, s, frag)
+
+    px_per_metre = machine_px_h / height_m
+    human_h = max(3, HUMAN_HEIGHT_M * px_per_metre)
+    human_x = X_LEFT - 34
 
     human = (
         '<line x1="4" y1="%d" x2="%d" y2="%d" stroke="#c3c9ce" stroke-width="2"/>'
-        '<circle cx="%d" cy="%d" r="8" fill="%s"/>'
-        '<rect x="%d" y="%d" width="16" height="%d" rx="5" fill="%s"/>'
+        '<circle cx="%d" cy="%.2f" r="%.2f" fill="%s"/>'
+        '<rect x="%.2f" y="%.2f" width="%.2f" height="%.2f" rx="%.2f" fill="%s"/>'
         '<text x="%d" y="%d" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="12" font-weight="600" fill="#5b6672">1.8 m</text>'
-        % (GROUND, VB_W - 6, GROUND, HUMAN_X, GROUND - HUMAN_H + 8, MID, HUMAN_X - 8, GROUND - HUMAN_H + 16, HUMAN_H - 16, MID, HUMAN_X, GROUND + 14)
+        % (
+            GROUND, VB_W - 6, GROUND,
+            human_x, GROUND - human_h * 0.86, max(2, human_h * 0.14), MID,
+            human_x - max(3, human_h * 0.13), GROUND - human_h * 0.72, max(6, human_h * 0.27), human_h * 0.72, max(1, human_h * 0.06), MID,
+            human_x, GROUND + 16,
+        )
     )
     ratio_lbl = (
-        '<text x="%.1f" y="%.1f" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="18" font-weight="700" fill="%s">%s×</text>'
-        % (X_LEFT + (w_i * s) / 2, max(ty - 10, 18), BLUE, "{:,.0f}".format(ratio))
+        '<text x="%.1f" y="18" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="18" font-weight="700" fill="%s">%s×</text>'
+        % (X_LEFT + (w_i * s) / 2, BLUE, "{:,.1f}".format(ratio) if ratio < 10 else "{:,.0f}".format(ratio))
     )
     svg = (
-        '<svg viewBox="0 0 %d %d" role="img" aria-label="Scale comparison: this machine\'s %s versus %s">%s%s%s</svg>'
-        % (VB_W, VB_H, esc(desc), esc(refword), human, silhouette, ratio_lbl)
+        '<svg viewBox="0 0 %d %d" role="img" aria-label="A human figure, drawn to scale, next to this machine\'s silhouette — the machine is %.1f metres tall (%s), about %s times an average adult\'s height.">%s%s%s</svg>'
+        % (VB_W, VB_H, height_m, esc(desc), "{:,.1f}".format(ratio), human, silhouette, ratio_lbl)
     )
     caption = (
-        '<p class="sc-caption">%s: <strong>%s %s</strong> — about <strong>%s×</strong> %s. (Silhouette size reflects relative scale on a compressed axis; the multiplier is exact.)</p>'
-        % (desc.capitalize(), value, unit, "{:,.0f}".format(ratio), refword)
+        '<p class="sc-caption">%s: <strong>%.1f m</strong> — about <strong>%s×</strong> an average adult\'s height (1.8 m). The machine is always drawn at the same size here; the human figure is what actually scales.</p>'
+        % (desc[0].upper() + desc[1:], height_m, "{:,.1f}".format(ratio) if ratio < 10 else "{:,.0f}".format(ratio))
     )
     return '<div class="scale-compare">%s%s</div>' % (svg, caption)
 
@@ -1100,8 +1100,8 @@ def render_machine(m, concepts_by_slug):
     body.append('<h1>%s</h1>' % m["title"])
     body.append('<p class="lede">%s</p>' % m["summary"])
     body.append(stat_row(m["stats"]))
-    scale_kind, scale_val, scale_label = m["scale"]
-    body.append(scale_compare_svg(scale_kind, scale_val, scale_label, m["slug"]))
+    scale_height_m, scale_label = m["scale"]
+    body.append(scale_compare_svg(scale_height_m, scale_label, m["slug"]))
     body.append('</section>')
 
     sections = [
