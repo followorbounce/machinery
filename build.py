@@ -928,6 +928,69 @@ SILHOUETTES = {
 }
 
 
+# Real photos, sourced only from Wikimedia Commons under a verified free license
+# (never manufacturer/stock imagery), one per machine where a genuine match for
+# that exact model exists. Deliberately absent for machines with no confirmed match
+# rather than substituting a similar-looking machine.
+MACHINE_PHOTOS = {
+    "caterpillar-d11": {
+        "file": "caterpillar-d11.jpg", "author": "Shaun Greiner", "license": "CC BY-SA 2.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:CatD11T.jpg",
+        "caption": "A Caterpillar D11T at work.",
+    },
+    "big-muskie-dragline": {
+        "file": "big-muskie-dragline.jpg", "author": "Eric Gunderson", "license": "CC BY-SA 3.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Big_Muskie_Bucket_(Looking_South).JPG",
+        "caption": "Big Muskie's bucket — the only piece of the machine that survives, preserved as a monument in Ohio.",
+    },
+    "bagger-293": {
+        "file": "bagger-293.jpg", "author": "Gary Evans", "license": "CC BY-SA 2.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Bagger_293_Tagebau_Hambach_DE_2017.jpg",
+        "caption": "Bagger 293 at the Hambach lignite mine, Germany, 2017.",
+    },
+    "bertha-tbm": {
+        "file": "bertha-tbm.jpg", "author": "SounderBruce", "license": "CC BY-SA 2.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Bertha_TBM_retrieval_site.jpg",
+        "caption": "Bertha's front end during its 2015 retrieval — not mid-bore.",
+    },
+    "konecranes-rtg": {
+        "file": "konecranes-rtg.jpg", "author": "Derek Yu", "license": "CC BY-SA 2.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/2.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:RTG_crane_by_Konecranes_SignalPAD.jpg",
+        "caption": "A Konecranes RTG at the company's Hyvinkää, Finland test site.",
+    },
+    "m1150-abv": {
+        "file": "m1150-abv.jpg", "author": "Lance Cpl. Brian M. Woodruff, USMC", "license": "Public domain (U.S. federal government work)",
+        "license_url": "https://en.wikipedia.org/wiki/Copyright_status_of_works_by_the_federal_government_of_the_United_States",
+        "source_url": "https://commons.wikimedia.org/wiki/File:M1_Assault_Breacher_Vehicle.jpg",
+        "caption": "An Assault Breacher Vehicle launching a mine-clearing line charge, 2008.",
+    },
+    "spartacus-dredger": {
+        "file": "spartacus-dredger.jpg", "author": "Stephen Cook", "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "source_url": "https://commons.wikimedia.org/wiki/File:Spartacus_cutter_suction_dredger.jpg",
+        "caption": "Spartacus during final construction at Royal IHC, Rotterdam.",
+    },
+}
+
+
+def photo_block(slug):
+    p = MACHINE_PHOTOS.get(slug)
+    if not p:
+        return ""
+    return (
+        '<figure class="machine-photo">'
+        '<img src="%simg/machines/%s" alt="%s" loading="lazy">'
+        '<figcaption>%s Photo: <a href="%s">%s</a>, <a href="%s">%s</a>, via Wikimedia Commons.</figcaption>'
+        '</figure>'
+        % (BASE, p["file"], esc(p["caption"]), p["caption"], p["source_url"], p["author"], p["license_url"], p["license"])
+    )
+
+
 HUMAN_HEIGHT_M = 1.8
 
 
@@ -1103,6 +1166,9 @@ def render_machine(m, concepts_by_slug):
     scale_height_m, scale_label = m["scale"]
     body.append(scale_compare_svg(scale_height_m, scale_label, m["slug"]))
     body.append('</section>')
+    photo = photo_block(m["slug"])
+    if photo:
+        body.append(photo)
 
     sections = [
         ("overview", "Overview", '<p>%s</p>' % m["summary"]),
