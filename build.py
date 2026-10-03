@@ -984,7 +984,7 @@ def photo_block(slug):
         return ""
     return (
         '<figure class="machine-photo">'
-        '<img src="%simg/machines/%s" alt="%s" loading="lazy">'
+        '<img src="%sassets/img/machines/%s" alt="%s" loading="lazy">'
         '<figcaption>%s Photo: <a href="%s">%s</a>, <a href="%s">%s</a>, via Wikimedia Commons.</figcaption>'
         '</figure>'
         % (BASE, p["file"], esc(p["caption"]), p["caption"], p["source_url"], p["author"], p["license_url"], p["license"])
@@ -1147,7 +1147,7 @@ def render_machine(m, concepts_by_slug):
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Heavy Machinery Encyclopedia", "item": SITE_URL + "/"},
-            {"@type": "ListItem", "position": 2, "name": cat_label, "item": "%s/machines/#%s" % (SITE_URL, m["category"])},
+            {"@type": "ListItem", "position": 2, "name": cat_label, "item": "%s/#machines" % SITE_URL},
             {"@type": "ListItem", "position": 3, "name": m["title"], "item": canonical},
         ],
     }
@@ -1158,7 +1158,7 @@ def render_machine(m, concepts_by_slug):
 
     body = []
     body.append('<main>')
-    body.append('<div class="crumb"><a href="%s">Home</a> / <a href="%smachines/#%s">%s</a> / %s</div>' % (BASE, BASE, m["category"], cat_label, m["title"]))
+    body.append('<div class="crumb"><a href="%s">Home</a> / <a href="%s#machines">%s</a> / %s</div>' % (BASE, BASE, cat_label, m["title"]))
     body.append('<section class="hero">')
     body.append('<span class="chip">%s</span>' % cat_label)
     body.append('<h1>%s</h1>' % m["title"])
@@ -1199,7 +1199,7 @@ def render_concept(c):
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Heavy Machinery Encyclopedia", "item": SITE_URL + "/"},
-            {"@type": "ListItem", "position": 2, "name": dom_label, "item": "%s/concepts/#%s" % (SITE_URL, c["domain"])},
+            {"@type": "ListItem", "position": 2, "name": dom_label, "item": "%s/#concepts" % SITE_URL},
             {"@type": "ListItem", "position": 3, "name": c["title"], "item": canonical},
         ],
     }
@@ -1210,7 +1210,7 @@ def render_concept(c):
 
     body = []
     body.append('<main>')
-    body.append('<div class="crumb"><a href="%s">Home</a> / <a href="%sconcepts/#%s">%s</a> / %s</div>' % (BASE, BASE, c["domain"], dom_label, c["title"]))
+    body.append('<div class="crumb"><a href="%s">Home</a> / <a href="%s#concepts">%s</a> / %s</div>' % (BASE, BASE, dom_label, c["title"]))
     body.append('<section class="hero">')
     body.append('<span class="chip domain">%s</span>' % dom_label)
     body.append('<h1>%s</h1>' % c["title"])

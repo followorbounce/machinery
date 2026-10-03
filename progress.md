@@ -15,6 +15,7 @@
 
 - 2026-09-19 — Added a Cloudflare Web Analytics beacon (cross-repo rollout across every deployed followorbounce/client site). See [[cloudflare-analytics-setup]] in the assistant's memory for the account/token map.
 
-## Next steps
+## Next steps- 2026-10-02 — Review fixes in `build.py` (rebuilt): machine photos pointed at `/machinery/img/machines/…` but files live in `assets/img/machines/` (7 broken images) → fixed; breadcrumb + BreadcrumbList links to nonexistent `/machinery/machines/#cat` and `/concepts/#dom` → now `/machinery/#machines` / `#concepts`. Link check now 0 broken. Formulas (hydraulic force/rod speed, gear/planetary ratios, CR) verified.
+
 - No open TODOs found in-repo or in commit history.
 - If adding a 21st machine or 11th concept, extend `data/` + `build.py`, then re-run the build rather than hand-writing a new page under `machines/`/`concepts/`.
