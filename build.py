@@ -7,7 +7,7 @@ plus data/graph.json (the single source of truth for nav + relationships),
 sitemap.xml, robots.txt and llms.txt. No build framework required: run
 `python3 build.py` from the project root any time content changes.
 """
-import json, math, os, re
+import json, math, os, re, subprocess, sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SITE_URL = "https://followorbounce.github.io/machinery"
@@ -1097,6 +1097,25 @@ def category_label(cid):
     return next(c["label"] for c in CATEGORIES if c["id"] == cid)
 
 
+def og_tags(canon, alt):
+    """Share-picture tags. The picture, og/<canonical path>.jpg, is drawn by engine/og_cards.py in the
+    followorbounce.github.io repo; run it after adding pages."""
+    rel = re.sub(r'\.html$', '', canon[len(SITE_URL) + 1:].rstrip('/')) or 'index'
+    img = SITE_URL + '/og/' + rel + '.jpg'
+    return ('<meta property="og:image" content="%s">\n<meta property="og:image:width" content="1200">\n'
+            '<meta property="og:image:height" content="630">\n<meta property="og:image:alt" content="%s">\n'
+            '<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="%s">\n'
+            % (img, html_escape(alt), img))
+
+
+def html_escape(s):
+    return s.replace('&', '&amp;').replace('"', '&quot;').replace('<', '&lt;').replace('>', '&gt;')
+
+
+def head_tmpl(**kw):
+    return HEAD_TMPL.format(og=og_tags(kw['canonical'], kw['title'] + ' — Heavy Machinery Encyclopedia'), **kw)
+
+
 def domain_label(did):
     return next(d["label"] for d in DOMAINS if d["id"] == did)
 
@@ -1114,7 +1133,7 @@ HEAD_TMPL = """<!DOCTYPE html>
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:site_name" content="Heavy Machinery Encyclopedia">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+{og}<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{base}assets/site.css">
@@ -1154,7 +1173,7 @@ def render_machine(m, concepts_by_slug):
     tech_jsonld = {"@context": "https://schema.org", "@type": "TechArticle", "headline": m["title"], "description": m["summary"], "isPartOf": {"@type": "WebSite", "name": "Heavy Machinery Encyclopedia", "url": SITE_URL + "/"}}
     jsonld = json.dumps([tech_jsonld, breadcrumb_jsonld])
 
-    head = HEAD_TMPL.format(title=m["title"], description=m["summary"], canonical=canonical, base=BASE, jsonld=jsonld)
+    head = head_tmpl(title=m["title"], description=m["summary"], canonical=canonical, base=BASE, jsonld=jsonld)
 
     body = []
     body.append('<main>')
@@ -1206,7 +1225,7 @@ def render_concept(c):
     tech_jsonld = {"@context": "https://schema.org", "@type": "TechArticle", "headline": c["title"], "description": c["definition"], "isPartOf": {"@type": "WebSite", "name": "Heavy Machinery Encyclopedia", "url": SITE_URL + "/"}}
     jsonld = json.dumps([tech_jsonld, breadcrumb_jsonld])
 
-    head = HEAD_TMPL.format(title=c["title"], description=c["definition"], canonical=canonical, base=BASE, jsonld=jsonld)
+    head = head_tmpl(title=c["title"], description=c["definition"], canonical=canonical, base=BASE, jsonld=jsonld)
 
     body = []
     body.append('<main>')
@@ -1826,7 +1845,7 @@ def build_index(graph):
             )
 
     jsonld = json.dumps({"@context": "https://schema.org", "@type": "WebSite", "name": "Heavy Machinery Encyclopedia", "url": SITE_URL + "/"})
-    head = HEAD_TMPL.format(
+    head = head_tmpl(
         title="Understand Machines Through Engineering",
         description="An engineering-first encyclopedia of construction, mining, agricultural, and industrial machinery — built around the physics, mathematics, and mechanisms that make each machine work.",
         canonical=SITE_URL + "/", base=BASE, jsonld=jsonld,
@@ -1878,6 +1897,10 @@ def main():
     write("llms.txt", "".join(llms))
 
     print("Built %d machine pages, %d concept pages, index, graph.json, sitemap.xml, robots.txt, llms.txt" % (len(MACHINES), len(CONCEPTS)))
+    # share pictures and the "More from Follow or Bounce" block (engine/og_cards.py in the homepage repo, when it sits next to this one)
+    og_pass = os.path.join(ROOT, '..', 'followorbounce.github.io', 'engine', 'og_cards.py')
+    if os.path.exists(og_pass):
+        subprocess.run([sys.executable, og_pass, 'machinery'])
 
 
 if __name__ == "__main__":
